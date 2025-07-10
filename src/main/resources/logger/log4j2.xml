@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="WARN">
+
+    <!-- 로그 설정에 사용할 변수를 설정 -->
+    <Properties>
+        <!-- 로그 출력 패턴 설정 -->
+        <!--
+        %d{yyyy-MM-dd HH:mm:ss}: 로그 출력 시간(연-월-일 시:분:초)
+        %-5p: 로그레벨 최대 5글자
+        %c{1}: 클래스 이름
+        %m: 로그 메시지
+        %n: 개행
+        -->
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{1}] - %m%n</Property>
+
+        <!-- 로그 파일 경로 -->
+        <!-- 로그 파일이 저장될 기본 경로를 ‘logs’로 설정합니다. -->
+        <Property name="LOG_PATH">logs</Property>
+    </Properties>
+
+    <!-- 로그를 출력할 대상 설정 -->
+    <Appenders>
+        <!-- 콘솔 출력 -->
+        <!-- 로그를 콘솔에 출력하도록 설정. -->
+        <!--
+        name="Console": Appender의 이름(Console) 설정
+        target="SYSTEM_OUT": 콘솔의 표준 출력(System.out)으로 로그를 보냄
+        -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+        </Console>
+
+        <!-- 로그 파일 기록 :: ROOT -->
+        <!--
+         - <File>을 이용해서 spring-info.log 파일에 로그가 저장되도록 지정
+         - <Filters>를 이용해서 로그 레벨(level)을 ‘INFO’로 설정: ‘INFO’ 이상의 로그들(INFO. WARN, ERROR)이 모두 파일에 기록
+        -->
+        <File name="FileForRootByInfo" fileName="${LOG_PATH}/spring-root-info.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Filters>
+                <!-- INFO 이상 로그 ACCEPT 하고 그렇지 않은건 DENY 한다 -->
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </File>
+
+        <!-- 로그 파일 기록 :: Application -->
+        <!--
+        <File name="FileForAppByInfo" fileName="${LOG_PATH}/spring-app-info.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Filters>
+                &lt;!&ndash; INFO 이상 로그 ACCEPT 하고 그렇지 않은건 DENY 한다 &ndash;&gt;
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </File>-->
+        <!-- DEBUG -->
+        <File name="FileForAppByDebug" fileName="${LOG_PATH}/spring-app-debug.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Filters>
+                <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </File>
+
+        <!-- INFO -->
+        <File name="FileForAppByInfo" fileName="${LOG_PATH}/spring-app-info.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Filters>
+                <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </File>
+
+        <!-- WARN -->
+        <File name="FileForAppByWarn" fileName="${LOG_PATH}/spring-app-warn.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Filters>
+                <LevelRangeFilter minLevel="WARN" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </File>
+
+        <!-- ERROR -->
+        <File name="FileForAppByError" fileName="${LOG_PATH}/spring-app-error.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Filters>
+                <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </File>
+    </Appenders>
+
+    <!-- 로그를 남기는 로거(Logger) -->
+    <Loggers>
+        <!-- 기본 로거 설정 -->
+        <!-- 기본 로그 레벨을 INFO 이상으로 설정해서 DEBUG 이하 로그는 출력되지 않도록 설정(INFO, WARN, ERROR 레벨 로그는 출력됨). -->
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileForRootByInfo"/>
+        </Root>
+
+        <!-- 애플리케이션 패키지 로깅 -->
+        <!--
+        Application 로그를 설정합니다.
+        ‘com.office’ 패키지에서 발생하는 로그를 별도로 관리합니다.
+        그리고 additivity 속성을 ‘false’로 설정하면 com.office 패키지 로그가 Root 로그로 전달되지 않습니다.
+        로그가 콘솔(Console)과 ‘spring-app-info.log’ 파일(FileForAppByInfo)에 기록됩니다.
+        -->
+        <Logger name="com.office" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+<!--            <AppenderRef ref="FileForAppByInfo"/>       &lt;!&ndash; INFO 어펜더 적용 &ndash;&gt;-->
+<!--            <AppenderRef ref="FileForAppByDebug"/>      &lt;!&ndash; DEBUG 어펜더 적용 &ndash;&gt;-->
+<!--            <AppenderRef ref="FileForAppByInfo"/>       &lt;!&ndash; INFO 어펜더 적용 &ndash;&gt;-->
+<!--            <AppenderRef ref="FileForAppByWarn"/>       &lt;!&ndash; WARN 어펜더 적용 &ndash;&gt;-->
+<!--            <AppenderRef ref="FileForAppByError"/>      &lt;!&ndash; ERROR 어펜더 적용 &ndash;&gt;-->
+        </Logger>
+    </Loggers>
+</Configuration>

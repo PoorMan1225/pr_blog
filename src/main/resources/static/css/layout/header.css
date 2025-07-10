@@ -1,0 +1,60 @@
+header {
+    width: 100%;
+    background-color: var(--header-background-color);
+    border-bottom: var(--header-border-bottom);
+    position: sticky;
+    z-index: 4;
+    top: 0;
+}
+
+header .header__container {
+    height: var(--header-height);
+    max-width: var(--main-max-width);
+    padding: var(--header-padding);
+    color: var(--header-font-color);
+    margin: 0 auto;      /* 가운데정렬 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .header__title {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+header .header__title {
+    display: flex;
+    align-items: center;
+}
+
+header .header__logo {
+    width: var(--header-logo-size);
+    height: var(--header-logo-size);
+    background-color: var(--header-logo-color);
+    border-radius: 50%;
+    transition: transform 0.4s ease;
+    flex-shrink: 0; /* 로고 커져도 타이틀은 축소 안되도록 */
+}
+
+header .header__title:hover .header__logo {
+    transform: scale(1.1); /* 크기 키우기 */
+}
+
+header .header__text {
+    margin-left: var(--header-title-margin);
+}
+
+header .header__nav {
+    width: var(--header-nav-width);
+    font-size: var(--header-font-size);
+    display: flex;
+    justify-content: space-between;
+}
+
+header .header__nav a:hover {
+    transition: color .2s;
+    color: var(--header-nav-hover-color);
+}
+

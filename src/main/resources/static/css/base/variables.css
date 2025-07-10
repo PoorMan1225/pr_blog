@@ -1,0 +1,45 @@
+:root {
+    /* home */
+    /** header **/
+    --header-height: 60px;
+    --header-logo-size: 40px;
+    --header-nav-width: 350px;
+    --header-nav-hover-color: orange;
+    --header-font-size: 14px;
+    --header-padding: 0 20px;
+    --header-title-margin: 15px;
+    --header-logo-color: orange;
+    --header-font-color: white;
+    --header-background-color: #151414;
+    --header-border-bottom: 1px solid #a8a5a5;
+
+    /** main **/
+    --main-max-width: 1500px;
+    --main-inner-padding: 20px 20px 100px 20px;
+    --main-background-color: #151414;
+    --main-padding-bttom: 100px;
+    --main-post-order-color: #a8a5a5;
+    --main-post-order-hover-color: #d7d5d5;
+    --main-post-order-padding : 10px;
+
+    /*** main post item ***/
+    --main-post-item-padding: 10px;
+    --main-post-item-img-height: 180px;
+    --main-post-item-img-background-color: #484646;
+    --main-post-item-img-radius: 10px;
+    --main-post-item-title-color: white;
+    --main-post-item-title-padding: 5px;
+    --main-post-item-content-color: #d7d5d5;
+    --main-post-item-content-padding: 5px;
+    --main-post-item-content-font-size: 12px;
+    --main-post-item-img-margin: 5px;
+    --main-post-order-font-size: 14px;
+
+
+    /* component */
+    /** up-down btn **/
+    --btn-up-down-width: 40px;
+    --btn-up-down-height: 30px;
+    --btn-up-down-radius: 10px;
+    --btn-icon-size: 20px;
+}

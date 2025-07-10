@@ -1,0 +1,61 @@
+.btn__container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    z-index: 4;
+    text-align: center;
+}
+
+.btn__up,
+.btn__down {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: var(--btn-up-down-width, 40px);
+    height: var(--btn-up-down-height, 40px);
+    background-color: orange;
+    border: 1px solid black;
+    flex-shrink: 0; /* 필요시 유지 */
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.btn__up {
+    border-top-left-radius: var(--btn-up-down-radius, 8px);
+    border-top-right-radius: var(--btn-up-down-radius, 8px);
+}
+
+.btn__down {
+    border-bottom-left-radius: var(--btn-up-down-radius, 8px);
+    border-bottom-right-radius: var(--btn-up-down-radius, 8px);
+}
+
+.btn__up:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px 1px gray;
+}
+
+.btn__down:hover {
+    transform: scale(1.1);
+    box-shadow: 0 -2px 5px 1px gray;
+}
+
+.btn__up > .icon__up,
+.btn__down > .icon__down {
+    width: var(--btn-icon-size, 20px);
+    height: var(--btn-icon-size, 20px);
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+}
+
+.btn__up > .icon__up {
+    background-image: url('../icon/arrow_up.svg');
+}
+
+.btn__down > .icon__down {
+    background-image: url('../icon/arrow_down.svg');
+}
