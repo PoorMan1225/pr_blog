@@ -21,8 +21,9 @@ main .main__inner {
 main .main__post {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
-    grid-auto-rows: auto;
-    gap: 10px;
+    grid-auto-rows: var(--main-post-grid-row-height);
+    grid-auto-flow: dense;  /* 더큰 박스가 있을 경우 빈공간이 생기는데 빈공간 안채워지게  다채움 */
+    gap: 10px 5px;
 }
 
 /* “정렬” 바 전체: 그리드 전체 영역 차지 */
@@ -74,6 +75,7 @@ main .post__item__img__wrapper {
 
 main .post__item_content__wrapper {
     width: 100%;
+
     color: var(--main-post-item-content-color, #666);
     background-color: var(--main-background-color);
 }
@@ -82,6 +84,7 @@ main .post__item_content__wrapper {
 main .post__item__img {
     width: 100%;
     height: 100%;
+    z-index: 1;
     background-color: #484646;
     background-image: url("../img/sample_img.jpg");
     background-size: cover;
@@ -99,6 +102,7 @@ main .post__item:hover .post__item__img {
 
 main .post__item:hover .post__item_content__wrapper {
     position: absolute;
+    z-index: 3;
 }
 
 main .post__item:hover .post__item__title {
@@ -107,7 +111,6 @@ main .post__item:hover .post__item__title {
     -webkit-line-clamp: unset;
     white-space: normal;
     text-overflow: unset;
-    z-index: 3;
 }
 
 main .post__item:hover .post__item__content {
@@ -117,7 +120,6 @@ main .post__item:hover .post__item__content {
     display: block; /* 또는 flex, inline-block 등 */
     white-space: normal;
     text-overflow: unset;
-    z-index: 3;
 }
 
 main .post__item__title {
@@ -148,4 +150,25 @@ main .post__item__content {
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color .3s;
+}
+
+/*────────────────────────────────────
+  반응형
+────────────────────────────────────*/
+@media screen and (max-width: 1230px) {
+    main .main__post {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    main .main__post {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media screen and (max-width: 700px) {
+    main .main__post {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

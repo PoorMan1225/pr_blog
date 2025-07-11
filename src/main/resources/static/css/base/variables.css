@@ -11,13 +11,14 @@
     --header-logo-color: orange;
     --header-font-color: white;
     --header-background-color: #151414;
-    --header-border-bottom: 1px solid #a8a5a5;
+    --header-border-bottom: 0.5px solid #706f6f;
 
     /** main **/
     --main-max-width: 1500px;
     --main-inner-padding: 20px 20px 100px 20px;
     --main-background-color: #151414;
     --main-padding-bttom: 100px;
+    --main-post-grid-row-height: 300px;
     --main-post-order-color: #a8a5a5;
     --main-post-order-hover-color: #d7d5d5;
     --main-post-order-padding : 10px;
@@ -37,8 +38,6 @@
     --main-post-item-content-margin-bottom: 10px;
     --main-post-item-img-margin: 5px;
     --main-post-order-font-size: 14px;
-
-
 
     /* component */
     /** up-down btn **/
