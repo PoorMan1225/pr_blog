@@ -1,5 +1,4 @@
 header {
-    width: 100%;
     background-color: var(--header-background-color);
     border-bottom: var(--header-border-bottom);
     position: sticky;
@@ -8,8 +7,9 @@ header {
 }
 
 header .header__container {
+    width: 100%;
     height: var(--header-height);
-    max-width: var(--main-max-width);
+    max-width: var(--main-max-width, 1500px);
     padding: var(--header-padding);
     color: var(--header-font-color);
     margin: 0 auto;      /* 가운데정렬 */

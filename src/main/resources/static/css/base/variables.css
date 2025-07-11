@@ -28,12 +28,16 @@
     --main-post-item-img-background-color: #484646;
     --main-post-item-img-radius: 10px;
     --main-post-item-title-color: white;
-    --main-post-item-title-padding: 5px;
+    --main-post-item-title-padding: 10px 10px 0 10px;
+    --main-post-item-title-margin-bottom: 5px;
     --main-post-item-content-color: #d7d5d5;
-    --main-post-item-content-padding: 5px;
+    --main-post-item-content-hover-color: #fcb128;
+    --main-post-item-content-padding: 10px 10px 0 10px;
     --main-post-item-content-font-size: 12px;
+    --main-post-item-content-margin-bottom: 10px;
     --main-post-item-img-margin: 5px;
     --main-post-order-font-size: 14px;
+
 
 
     /* component */
