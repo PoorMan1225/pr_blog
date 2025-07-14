@@ -54,4 +54,8 @@
     --btn-up-down-height: 30px;
     --btn-up-down-radius: 10px;
     --btn-icon-size: 20px;
+
+    /* login */
+    --login-background-color: #151414;
+    --login-form-background-color: #282828;
 }

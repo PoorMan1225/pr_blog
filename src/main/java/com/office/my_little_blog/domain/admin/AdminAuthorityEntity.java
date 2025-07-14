@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAuthorityEntity {
+public class AdminAuthorityEntity {
     @Id
     @Column(name = "no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class UserAuthorityEntity {
     private String name;
 
     @Builder
-    public UserAuthorityEntity(int authNo, String name) {
+    public AdminAuthorityEntity(int authNo, String name) {
         this.authNo = authNo;
         this.name = name;
     }

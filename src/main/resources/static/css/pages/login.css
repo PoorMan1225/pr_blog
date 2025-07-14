@@ -1,0 +1,108 @@
+.login__container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--login-background-color);
+    height: 100vh;
+    padding-bottom: 100px;
+}
+
+.login__form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--login-form-background-color);
+    width: 400px;
+    height: 450px;
+    border: 1px solid gray;
+    border-radius: 20px;
+    box-shadow: 0 0 10px #cccccc;
+}
+
+.login__form .login__title {
+    color: #cccccc;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login__form .login__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login__form .login__wrapper hr {
+    width: 100%;
+}
+
+.login__form .login__wrapper input {
+    width: 350px;
+    height: 50px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.login__form .login__wrapper .wrap {
+    position: relative;
+}
+
+.login__form .login__wrapper .wrap label.active {
+    transform: translateY(0%);
+    font-size: 11px;
+}
+
+.login__form label {
+    align-self: start;
+    position: absolute;
+    padding-left: 10px;
+    color: #706f6f;
+    font-size: 14px;
+    transform: translateY(50%);
+    transition: transform 0.3s ease, font-size 0.3s ease;
+}
+
+.login__form .login__wrapper input.active {
+    border: 2px solid orange !important;
+}
+
+.login__form .login__wrapper input[type="text"] {
+    border-radius: 10px 10px 0 0;
+    border-style: solid;
+    border-color: gray;
+    border-width: 1px 1px 0.5px 1px;  /* top, right, bottom, left */
+}
+
+.login__form .login__wrapper input[type="password"] {
+    border-radius: 0 0 10px 10px;
+    border-style: solid;
+    border-color: gray;
+    border-width: 0.5px 1px 1px 1px;  /* top, right, bottom, left */
+}
+
+.login__form .valid__txt {
+    color: orange;
+    display: inline-block;
+    margin: 20px 0 20px 0;
+}
+
+.login__form button {
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    width: 350px;
+    height: 60px;
+    font-size: 15px;
+    color: black;
+    background-color: orange;
+}
+
+.login__form button:hover {
+    background-color: #fab435;
+    cursor: pointer;
+}
+

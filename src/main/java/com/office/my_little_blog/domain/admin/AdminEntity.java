@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "Admins")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+public class AdminEntity {
 
     @Id
     @Column(name = "no")
@@ -29,7 +29,7 @@ public class UserEntity {
 
     @ManyToOne
     @JoinColumn(name = "auth_no")
-    private UserAuthorityEntity userAuthorityEntity; // 참조 권한 번호
+    private AdminAuthorityEntity adminAuthorityEntity; // 참조 권한 번호
 
     @Column(name = "create_dt", updatable = false)
     private LocalDateTime createDt;                  // 사용자 정보 등록일
@@ -39,7 +39,7 @@ public class UserEntity {
 
     @PrePersist
     protected void onCreate() {
-        this.userAuthorityEntity = new UserAuthorityEntity(2, "ADMIN");  // 1: SUPER_ADMIN, 2: ADMIN
+        this.adminAuthorityEntity = new AdminAuthorityEntity(2, "ADMIN");  // 1: SUPER_ADMIN, 2: ADMIN
         this.createDt = LocalDateTime.now();
         this.updateDt = LocalDateTime.now();
     }

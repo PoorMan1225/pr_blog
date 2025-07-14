@@ -32,7 +32,9 @@ public class SecurityConfig {
                                         "/css/**",
                                         "/icon/**",
                                         "/img/**",
-                                        "/js/**")
+                                        "/js/**",
+                                        "/admin/login"
+                                )
                                 .permitAll()
 //                        .requestMatchers("/planner/**").hasAnyRole("USER")
                                 .anyRequest()
@@ -42,8 +44,8 @@ public class SecurityConfig {
         http
                 // 스프링 시큐리티가 제공해주는 기본 폼
                 .formLogin(login -> login
-//                                .loginPage("/admin/login")                      // 스프링 시큐리티가 제공해주는 기본 로그인 폼 대신에 우리가 지정한 로그인 폼 지정
-                                .loginProcessingUrl("/admin/login")               // 로그인 프로세스 를 진행할 url 설정
+                                .loginPage("/admin/login")                      // 스프링 시큐리티가 제공해주는 기본 로그인 폼 대신에 우리가 지정한 로그인 폼 지정
+//                                .loginProcessingUrl("/admin/login")               // 로그인 프로세스 를 진행할 url 설정
                                 .usernameParameter("username")                    // 폼에서 전달할 매핑 아이디 이름
                                 .passwordParameter("password")                    // 폼에서 전달할 매핑 pw 이름
                                 .successHandler((request, response, authentication) -> { // request, response, 인증객체 (id, pw 포함)
@@ -55,6 +57,7 @@ public class SecurityConfig {
                                 })
                                 .failureHandler((request, response, exception) -> {
                                     log.info("signin failureHandler()");
+                                    response.sendRedirect("/");
                                 })
                 );
 
