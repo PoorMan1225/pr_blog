@@ -1,10 +1,57 @@
 /*────────────────────────────────────
+  mobile navigation
+────────────────────────────────────*/
+.container {
+    position: relative;
+    width: 100%;
+}
+
+.container .mobile_nav__wrapper {
+    position: fixed;
+    opacity: 1;
+    height: 100%;
+    width: 100%;
+    background-color: var(--mobile-nav-background-color);
+    z-index: 5;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+.container .mobile_nav__wrapper .mobile__nav {
+    min-width: var(--header-min-width);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+.container .mobile_nav__wrapper .mobile__nav li {
+    height: var(--mobile-nav-menu-height);
+    font-size: var(--mobile-nav-menu-font-size);
+    color: var(--mobile-nav-menu-color);
+    vertical-align: middle;
+    text-align: center;
+    line-height: var(--mobile-nav-menu-height);
+}
+
+.container .mobile_nav__wrapper .mobile__nav hr {
+    width: 85%;
+    background-color: var(--mobile-nav-hr-color);
+}
+
+.container .mobile_nav__wrapper.hide {
+    opacity: 0;
+    height: 0;
+}
+
+/*────────────────────────────────────
   main Layout
 ────────────────────────────────────*/
+
 main {
     width: 100%;
     min-height: calc(100vh - var(--header-height, 60px));
     background-color: var(--main-background-color, #f9f9f9);
+    min-width: var(--main-post-item-min-width);
 }
 
 /* 내부 컨테이너: 중앙 정렬 + 패딩 */
@@ -22,12 +69,13 @@ main .main__post {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-auto-rows: var(--main-post-grid-row-height);
-    grid-auto-flow: dense;  /* 더큰 박스가 있을 경우 빈공간이 생기는데 빈공간 안채워지게  다채움 */
+    grid-auto-flow: dense; /* 더큰 박스가 있을 경우 빈공간이 생기는데 빈공간 안채워지게  다채움 */
     gap: 10px 5px;
 }
 
 /* “정렬” 바 전체: 그리드 전체 영역 차지 */
 main .post__order {
+    min-width: 400px;
     grid-column: 1 / -1;
     padding: var(--main-post-order-padding, 10px);
 }
@@ -62,6 +110,7 @@ main .post__item {
     cursor: pointer;
     width: 100%;
     box-sizing: border-box;
+
 }
 
 /* 이미지 래퍼: 비율 유지용 */
@@ -86,7 +135,7 @@ main .post__item__img {
     height: 100%;
     z-index: 1;
     background-color: #484646;
-    background-image: url("../img/sample_img.jpg");
+    background-image: url("../../img/sample_img.jpg");
     background-size: cover;
     background-position: center;
     transition: transform .4s ease;

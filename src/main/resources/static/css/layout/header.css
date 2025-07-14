@@ -4,6 +4,7 @@ header {
     position: sticky;
     z-index: 4;
     top: 0;
+    min-width: var(--header-min-width);
 }
 
 header .header__container {
@@ -24,11 +25,6 @@ header .header__title {
     cursor: pointer;
 }
 
-header .header__title {
-    display: flex;
-    align-items: center;
-}
-
 header .header__logo {
     width: var(--header-logo-size);
     height: var(--header-logo-size);
@@ -47,10 +43,12 @@ header .header__text {
 }
 
 header .header__nav {
-    width: var(--header-nav-width);
+    /*width: var(--header-nav-width);*/
     font-size: var(--header-font-size);
     display: flex;
+    gap: 20px;
     justify-content: space-between;
+    align-items: center;
 }
 
 header .header__nav a:hover {
@@ -58,3 +56,60 @@ header .header__nav a:hover {
     color: var(--header-nav-hover-color);
 }
 
+header .header__nav li {
+    cursor: pointer;
+}
+
+header .header__nav .nav__menu {
+    display: none;
+    align-items: center;
+    gap: 5px;
+}
+
+header .header__nav .nav__menu span {
+    user-select: none; /* 더블클릭 파란색 방지 */
+}
+
+header .header__nav .nav__menu .nav__icon {
+    position: relative;
+    width: 24px;
+    height: 24px;
+}
+
+header .header__nav .nav__menu .icon__close,
+header .header__nav .nav__menu .icon__menu {
+    background: url("../../icon/close.svg");
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    position: absolute;
+    display: block;
+    width: 24px;
+    height: 24px;
+}
+
+header .header__nav .nav__menu .icon__close {
+    background: url("../../icon/close.svg");
+}
+
+header .header__nav .nav__menu .icon__menu {
+    background: url("../../icon/menu.svg");
+}
+
+header .header__nav .nav__menu .icon__close.hide,
+header .header__nav .nav__menu .icon__menu.hide {
+    opacity: 0;
+    transform: scale(0.3);
+}
+
+/*────────────────────────────────────
+  반응형
+────────────────────────────────────*/
+@media screen and (max-width: 700px) {
+    header .header__nav .nav__menu {
+        display: flex;
+    }
+    header .header__nav li:not(.nav__menu) {
+        display: none;
+    }
+}

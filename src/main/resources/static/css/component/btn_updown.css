@@ -53,9 +53,9 @@
 }
 
 .btn__up > .icon__up {
-    background-image: url('../icon/arrow_up.svg');
+    background-image: url('../../icon/arrow_up.svg');
 }
 
 .btn__down > .icon__down {
-    background-image: url('../icon/arrow_down.svg');
+    background-image: url('../../icon/arrow_down.svg');
 }

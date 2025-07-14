@@ -12,6 +12,14 @@
     --header-font-color: white;
     --header-background-color: #151414;
     --header-border-bottom: 0.5px solid #706f6f;
+    --header-min-width: 400px;
+
+    /** mobile nav **/
+    --mobile-nav-background-color: #151414;
+    --mobile-nav-hr-color: #706f6f;
+    --mobile-nav-menu-height: 40px;
+    --mobile-nav-menu-color: white;
+    --mobile-nav-menu-font-size: 14px;
 
     /** main **/
     --main-max-width: 1500px;
@@ -38,6 +46,7 @@
     --main-post-item-content-margin-bottom: 10px;
     --main-post-item-img-margin: 5px;
     --main-post-order-font-size: 14px;
+    --main-post-item-min-width: 400px;
 
     /* component */
     /** up-down btn **/

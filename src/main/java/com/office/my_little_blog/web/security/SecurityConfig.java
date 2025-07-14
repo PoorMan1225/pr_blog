@@ -30,6 +30,7 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/",
                                         "/css/**",
+                                        "/icon/**",
                                         "/img/**",
                                         "/js/**")
                                 .permitAll()
