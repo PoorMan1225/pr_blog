@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor   // JPA 는 기본생성자 필 수
 public class AdminAuthorityEntity {
     @Id
     @Column(name = "no")
