@@ -3,6 +3,8 @@ package com.office.my_little_blog.admin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface AdminAuthorityRepository extends JpaRepository<AdminAuthorityEntity, Integer> {
 
@@ -13,4 +15,5 @@ public interface AdminAuthorityRepository extends JpaRepository<AdminAuthorityEn
      */
     boolean existsByAdminRole(AdminRole adminRole);
 
+    Optional<AdminAuthorityEntity> findByAdminRole(AdminRole adminRole);
 }

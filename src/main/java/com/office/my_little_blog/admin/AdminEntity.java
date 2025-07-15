@@ -22,10 +22,10 @@ public class AdminEntity {
     private int no;
 
     @Column(name = "id", nullable = false, unique = true)
-    private String id;
+    private String loginId;
 
     @Column(name = "pwd", nullable = false)
-    private String pwd;
+    private String loginPwd;
 
     @ManyToOne
     @JoinColumn(name = "auth_no")
@@ -39,7 +39,6 @@ public class AdminEntity {
 
     @PrePersist
     protected void onCreate() {
-        this.adminAuthorityEntity = new AdminAuthorityEntity(AdminRole.ADMIN);  // 1: SUPER_ADMIN, 2: ADMIN
         this.createDt = LocalDateTime.now();
         this.updateDt = LocalDateTime.now();
     }
@@ -47,5 +46,10 @@ public class AdminEntity {
     @PreUpdate
     protected void onUpdate() {
         this.updateDt = LocalDateTime.now();
+    }
+
+    public String getAdminRoleName() {
+        if(adminAuthorityEntity == null) return null;
+        return adminAuthorityEntity.getAdminRole().name();
     }
 }
