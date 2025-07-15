@@ -1,4 +1,4 @@
-package com.office.my_little_blog.domain.admin;
+package com.office.my_little_blog.admin;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,7 +39,7 @@ public class AdminEntity {
 
     @PrePersist
     protected void onCreate() {
-        this.adminAuthorityEntity = new AdminAuthorityEntity(2, "ADMIN");  // 1: SUPER_ADMIN, 2: ADMIN
+        this.adminAuthorityEntity = new AdminAuthorityEntity(AdminRole.ADMIN);  // 1: SUPER_ADMIN, 2: ADMIN
         this.createDt = LocalDateTime.now();
         this.updateDt = LocalDateTime.now();
     }

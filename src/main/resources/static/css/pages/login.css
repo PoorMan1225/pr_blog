@@ -39,15 +39,16 @@
 }
 
 .login__form .login__wrapper input {
-    width: 350px;
-    height: 50px;
+    width: var(--login-form-input-width);
+    height: var(--login-form-input-height);
+    padding: var(--login-input-padding);
     border: none;
     outline: none;
-    padding: 10px;
     cursor: pointer;
 }
 
 .login__form .login__wrapper .wrap {
+    width: 100%;
     position: relative;
 }
 
@@ -84,6 +85,19 @@
     border-width: 0.5px 1px 1px 1px;  /* top, right, bottom, left */
 }
 
+.login__form .login__wrapper .btn__clear {
+    position: absolute;
+    display: inline-block;
+    visibility: hidden;
+    background: url("../../icon/clear.svg");
+    left: 100%;
+    transform: translateX(calc(-100% - 10px)) translateY(50%);
+    width: var(--login-form-input-clear-button-size);
+    height: var(--login-form-input-clear-button-size);
+    cursor: pointer;
+}
+
+
 .login__form .valid__txt {
     color: orange;
     display: inline-block;
@@ -99,10 +113,14 @@
     font-size: 15px;
     color: black;
     background-color: orange;
+    cursor: pointer;
 }
 
-.login__form button:hover {
+.login__form button:disabled {
+    background-color: #706f6f;
+}
+
+.login__form button:hover:not(:disabled) {
     background-color: #fab435;
-    cursor: pointer;
 }
 

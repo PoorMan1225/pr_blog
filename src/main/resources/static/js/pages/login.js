@@ -1,44 +1,68 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     const $inputId = document.querySelector('#input__id');
+    const $labelId = document.querySelector('label[for="input__id"]');
     const $inputPwd = document.querySelector('#input__pwd');
-    const $inputIdLabel = document.querySelector(`label[for="${$inputId.id}"]`);
-    const $inputPwdLabel = document.querySelector(`label[for="${$inputPwd.id}"]`);
+    const $labelPwd = document.querySelector('label[for="input__pwd"]');
+    const $btnLogin = document.querySelector('.login__form button');
+    const $btnIdClear = document.querySelector('#btn__idclear');
+    const $btnPwdClear = document.querySelector('#btn__pwdclear');
     
-    function focusId() {
-        $inputId.classList.add('active');
-        $inputIdLabel.classList.add('active');
-        // 애니메이션 끝난 후 포커스 주기.
-        setTimeout(() => {
-            $inputId.focus();
-        }, 300);
+    // 최초 ID 포커스
+    focusAndAnimate($inputId, $labelId);
+    $btnLogin.disabled = true;
+    
+    // 이벤트 바인딩
+    [$inputId, $inputPwd].forEach(($input) => {
+        $input.addEventListener('input', handleInputChange);
+    });
+    
+    document.addEventListener('click', handleDocumentClick);
+    
+    // clear 버튼 클릭
+    $btnIdClear.addEventListener('click', function () {
+        $inputId.value = '';
+        $btnIdClear.style.visibility = 'hidden';
+    });
+    $btnPwdClear.addEventListener('click', function () {
+        $inputPwd.value = '';
+        $btnPwdClear.style.visibility = 'hidden';
+    });
+    
+    //함수 정의
+    function handleInputChange() {
+        const isEmpty = !$inputId.value.trim() || !$inputPwd.value.trim();
+        $btnLogin.disabled = isEmpty;
+        
+        $btnIdClear.style.visibility = !$inputId.value.trim() ? 'hidden' : 'visible';
+        $btnPwdClear.style.visibility = !$inputPwd.value.trim() ? 'hidden' : 'visible';
     }
     
-    // 최초 focus 호출
-    focusId();
+    function handleDocumentClick(ev) {
+        const target = ev.target;
+        
+        toggleActiveState($inputId, $labelId, false);
+        toggleActiveState($inputPwd, $labelPwd, false);
+        
+        if (target === $inputId) {
+            toggleActiveState($inputId, $labelId, true);
+        } else if (target === $inputPwd) {
+            toggleActiveState($inputPwd, $labelPwd, true);
+        }
+    }
     
-    document.addEventListener('click', function (ev) {
-        // active 제거
-        $inputId.classList.remove('active');
-        $inputPwd.classList.remove('active');
-        
-        if($inputId.value.length <= 0) {
-            $inputIdLabel.classList.remove('active');
+    function toggleActiveState($input, $label, shouldActivate) {
+        if (shouldActivate || $input.value.trim()) {
+            $input.classList.add('active');
+            $label.classList.add('active');
+        } else {
+            $input.classList.remove('active');
+            $label.classList.remove('active');
         }
-        
-        if($inputPwd.value.length <= 0) {
-            $inputPwdLabel.classList.remove('active');
-        }
-        
-        // pwd 또는 id 가 들어왔을때만 active 애니메이션 실행
-        if(ev.target.id === 'input__pwd') {
-            $inputPwd.classList.add('active');
-            $inputPwdLabel.classList.add('active');
-        }
-        
-        if(ev.target.id === 'input__id') {
-            $inputId.classList.add('active');
-            $inputIdLabel.classList.add('active');
-        }
-    });
+    }
+    
+    function focusAndAnimate($input, $label) {
+        $input.classList.add('active');
+        $label.classList.add('active');
+        setTimeout(() => $input.focus(), 300);
+    }
 });
-

@@ -17,14 +17,16 @@
             <div class="wrap">
                 <label for="input__id">아이디</label>
                 <input id="input__id" type="text" name="login_id" >
+                <span class="btn__clear" id="btn__idclear"></span>
             </div>
             <div class="wrap">
                 <label for="input__pwd">패스워드</label>
                 <input id="input__pwd" type="password" name="login_pwd">
+                <span class="btn__clear" id="btn__pwdclear"></span>
             </div>
         </div>
         <span class="valid__txt">아이디 또는 패스워드를 입력하여 주십시오.</span>
-        <button onsubmit="">로그인</button>
+        <button id="btn__login" onsubmit="">로그인</button>
     </form>
 </div>
 <script th:src="@{/js/pages/login.js}"></script>

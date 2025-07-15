@@ -58,4 +58,8 @@
     /* login */
     --login-background-color: #151414;
     --login-form-background-color: #282828;
+    --login-form-input-width: 350px;
+    --login-form-input-height: 50px;
+    --login-form-input-clear-button-size: 24px;
+    --login-input-padding: 10px calc(10px + var(--login-form-input-clear-button-size)) 10px 10px;
 }

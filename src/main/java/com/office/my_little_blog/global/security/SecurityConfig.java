@@ -1,4 +1,4 @@
-package com.office.my_little_blog.web.security;
+package com.office.my_little_blog.global.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.disable())
-                .csrf(csrf -> csrf.disable());
+                .csrf(csrf -> csrf.disable()); // 반드시 활성화.
 
         http
                 .authorizeHttpRequests(auth -> auth

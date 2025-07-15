@@ -1,4 +1,4 @@
-package com.office.my_little_blog.web;
+package com.office.my_little_blog.home;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
