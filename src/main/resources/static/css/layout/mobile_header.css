@@ -26,6 +26,12 @@
     vertical-align: middle;
     text-align: center;
     line-height: var(--mobile-nav-menu-height);
+    cursor: pointer;
+}
+
+.container .mobile_nav__wrapper .mobile__nav li:hover {
+    transition: color .2s;
+    color: var(--header-nav-hover-color);
 }
 
 .container .mobile_nav__wrapper .mobile__nav hr {
@@ -35,5 +41,10 @@
 
 .container .mobile_nav__wrapper.hide {
     opacity: 0;
+    height: 0;
+}
+
+.container .mobile_nav__wrapper.hide,
+.container .mobile_nav__wrapper .mobile__nav {
     height: 0;
 }
