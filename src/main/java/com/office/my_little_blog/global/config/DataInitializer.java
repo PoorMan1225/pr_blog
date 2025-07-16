@@ -33,7 +33,7 @@ public class DataInitializer {
                                 .build()
                 );
             }
-
+//
             if (!authorityRepository.existsByAdminRole(AdminRole.ADMIN)) {
                 authorityRepository.save(
                         AdminAuthorityEntity.builder()

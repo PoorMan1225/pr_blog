@@ -11,14 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
     focusAndAnimate($inputId, $labelId);
     $btnLogin.disabled = true;
     
-    // 이벤트 바인딩
+    // input 이벤트 바인딩
     [$inputId, $inputPwd].forEach(($input) => {
         $input.addEventListener('input', handleInputChange);
+        $input.addEventListener('focus', focusChange);
     });
     
     document.addEventListener('click', handleDocumentClick);
     
-    // clear 버튼 클릭
+    /**
+     * 클리어 버튼 클릭시 발생 이벤트
+     */
     $btnIdClear.addEventListener('click', function () {
         $inputId.value = '';
         $btnIdClear.style.visibility = 'hidden';
@@ -28,7 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
         $btnPwdClear.style.visibility = 'hidden';
     });
     
-    //함수 정의
+    /**
+     * input 값 변경시 발생 이벤트
+     * 값있을 경우 clearbutton 활성화 없을 경우 비활성화
+     */
     function handleInputChange() {
         const isEmpty = !$inputId.value.trim() || !$inputPwd.value.trim();
         $btnLogin.disabled = isEmpty;
@@ -37,12 +43,26 @@ document.addEventListener('DOMContentLoaded', () => {
         $btnPwdClear.style.visibility = !$inputPwd.value.trim() ? 'hidden' : 'visible';
     }
     
+    /**
+     * document 클릭시에 애니메이션 해제 (input 제외)
+     * @param ev
+     */
     function handleDocumentClick(ev) {
         const target = ev.target;
-        
-        toggleActiveState($inputId, $labelId, false);
-        toggleActiveState($inputPwd, $labelPwd, false);
-        
+        if(target !== $inputId) {
+            toggleActiveState($inputId, $labelId, false);
+        }
+        if(target !== $inputPwd) {
+            toggleActiveState($inputPwd, $labelPwd, false);
+        }
+    }
+    
+    /**
+     * input focus 발생시 애니메이션 효과 추가
+     * @param ev
+     */
+    function focusChange(ev) {
+        const target = ev.target;
         if (target === $inputId) {
             toggleActiveState($inputId, $labelId, true);
         } else if (target === $inputPwd) {
@@ -50,6 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    /**
+     * input 버튼을 누르거나 했을때 input 애니메이션 제거 또는 활성화
+     * @param $input
+     * @param $label
+     * @param shouldActivate 애니메이션 활성화 여부
+     */
     function toggleActiveState($input, $label, shouldActivate) {
         if (shouldActivate || $input.value.trim()) {
             $input.classList.add('active');
@@ -60,6 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    /**
+     * 최초 포커스시 애니메이션
+     * @param $input
+     * @param $label
+     */
     function focusAndAnimate($input, $label) {
         $input.classList.add('active');
         $label.classList.add('active');

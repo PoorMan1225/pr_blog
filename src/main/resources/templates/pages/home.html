@@ -8,23 +8,14 @@
     <link rel="stylesheet" th:href="@{/css/base/variables.css}">
     <link rel="stylesheet" th:href="@{/css/base/common.css}">
     <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/mobile_header.css}">
     <link rel="stylesheet" th:href="@{/css/component/btn_updown.css}">
     <link rel="stylesheet" th:href="@{/css/pages/home.css}">
 </head>
 <body>
 <div class="container">
-    <header th:replace="~{layout/nav_header.html::header}"></header>
-    <div class="mobile_nav__wrapper hide">
-        <ul class="mobile__nav">
-            <li><a href="/login">로그인</a></li>
-            <hr>
-            <li><a href="/posts/recent-edit">최신 수정글</a></li>
-            <hr>
-            <li><a href="/posts/recent-create">최신 등록글</a></li>
-            <hr>
-            <li><a href="/about">개발자 소개</a></li>
-        </ul>
-    </div>
+    <header th:replace="~{layout/nav_header.html::header(${isAdmin})}"></header>
+    <div th:replace="~{layout/nav_mobile.html::mobile_header(${isAdmin})}"></div>
     <main>
         <div class="main__inner">
             <div class="post__order">

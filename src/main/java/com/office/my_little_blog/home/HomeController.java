@@ -14,9 +14,8 @@ public class HomeController {
     @GetMapping({"", "/"})
     public String home(@AuthenticationPrincipal User user, Model model) {
         log.info("home()");
-        if (user != null) {
-            model.addAttribute("username", user.getUsername());
-        }
+        boolean isAdmin = user != null;
+        model.addAttribute("isAdmin", isAdmin);
         return "pages/home";
     }
 }

@@ -11,7 +11,8 @@
 </head>
 <body>
 <div class="login__container">
-    <form class="login__form" autocomplete="off">
+    <!--/* spring security 로그인 url */-->
+    <form th:action="@{/admin/login}" method="post" class="login__form" autocomplete="off">
         <h1 class="login__title">Login</h1>
         <div class="login__wrapper">
             <div class="wrap">
@@ -25,7 +26,7 @@
                 <span class="btn__clear" id="btn__pwdclear"></span>
             </div>
         </div>
-        <span class="valid__txt">아이디 또는 패스워드를 입력하여 주십시오.</span>
+        <span class="valid__txt" th:text="${message ?: ''}"></span>
         <button id="btn__login" onsubmit="">로그인</button>
     </form>
 </div>

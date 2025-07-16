@@ -34,9 +34,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.disable())
-                .csrf(csrf -> csrf.disable()); // 반드시 활성화.
-
+                .cors(cors -> cors.disable());
         http
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(
@@ -62,6 +60,13 @@ public class SecurityConfig {
                                 .passwordParameter("login_pwd")                   // 폼에서 전달할 매핑 pw 이름
                                 .successHandler(customSuccessHandler())
                                 .failureHandler(customFailerHandler())
+                );
+
+        http
+                .sessionManagement(session -> session
+                        .maximumSessions(1)                                     // 한 클라이언트만 허용
+                        .maxSessionsPreventsLogin(false)                        // 새 로그인 허용, 기존 세션 만료
+                        .expiredUrl("/admin/login?expire=true")                 // 만료 시 이동 url
                 );
 
 //        http

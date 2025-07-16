@@ -1,0 +1,39 @@
+/*────────────────────────────────────
+  mobile navigation
+────────────────────────────────────*/
+.container .mobile_nav__wrapper {
+    position: fixed;
+    opacity: 1;
+    height: 100%;
+    width: 100%;
+    background-color: var(--mobile-nav-background-color);
+    z-index: 5;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+.container .mobile_nav__wrapper .mobile__nav {
+    min-width: var(--header-min-width);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+.container .mobile_nav__wrapper .mobile__nav li {
+    height: var(--mobile-nav-menu-height);
+    font-size: var(--mobile-nav-menu-font-size);
+    color: var(--mobile-nav-menu-color);
+    vertical-align: middle;
+    text-align: center;
+    line-height: var(--mobile-nav-menu-height);
+}
+
+.container .mobile_nav__wrapper .mobile__nav hr {
+    width: 85%;
+    background-color: var(--mobile-nav-hr-color);
+}
+
+.container .mobile_nav__wrapper.hide {
+    opacity: 0;
+    height: 0;
+}
