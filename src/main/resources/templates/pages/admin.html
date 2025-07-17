@@ -5,9 +5,46 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" th:href="@{/css/base/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/base/common.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/admin/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/admin/section_board.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/admin/section_category.css}">
     <title>관리자 페이지</title>
 </head>
 <body>
-
+<div class="container">
+    <header th:replace="~{layout/admin/nav_admin.html::header(${true})}"></header>
+    <main>
+        <aside>
+            <div class="box__post">
+                <span>글쓰기</span>
+            </div>
+            <div class="managed__container">
+                <div class="managed__item">
+                    <strong class="title__menu">
+                        <span></span>
+                        콘텐츠
+                    </strong>
+                    <ul class="list__menu">
+                        <li>
+                            <a href="" class="link__menu">글 관리</a>
+                        </li>
+                        <li>
+                            <a href="/admin/board" class="link__menu">페이지 관리</a>
+                        </li>
+                        <li>
+                            <a href="/admin/category" class="link__menu">카테고리 관리</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+        <!-- 섹션은 누르는 것에 따라 변경된다. -->
+        <section th:replace="~{layout/admin/section_category.html}"></section>
+    </main>
+</div>
+<script src="/js/pages/admin.js"></script>
 </body>
 </html>

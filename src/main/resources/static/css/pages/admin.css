@@ -1,0 +1,88 @@
+.container {
+    width: 100%;
+    background-color: #706f6f;
+}
+
+/*────────────────────────────────────
+  admin main Layout
+────────────────────────────────────*/
+
+main {
+    width: 1150px;
+    padding: 20px 20px 20px 20px;
+    margin: 0 auto;
+    background-color: #fcb128;
+    display: flex;
+    gap: 50px;
+}
+
+main aside {
+    width: 216px;
+    height: 100vh;
+}
+
+main aside .box__post {
+    width: 100%;
+    height: 45px;
+    background-color: white;
+    border: 1px solid #706f6f;
+    text-align: start;
+    line-height: 45px;
+    padding-left: 10px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    transition: background-color 0.3s;
+}
+
+main aside .box__post span {
+    user-select: none;
+}
+
+main aside .box__post:hover {
+    background-color: #fcb128;
+}
+
+main aside .managed__container {
+    width: 100%;
+    background-color: black;
+    color: white;
+    padding: 15px;
+    border: 1px solid #706f6f;
+}
+
+main aside .title__menu {
+    display: flex;
+    padding: 3px;
+    justify-content: start;
+    align-items: center;
+}
+
+main aside .title__menu span {
+    display: block;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle; /* 텍스트와 수직 정렬 맞출 때 */
+    background: url("../../icon/arrow_up.svg");
+    align-items: start;
+    margin-right: 5px;
+}
+
+main aside .list__menu li {
+    padding: 4px 0px 4px 30px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+main aside .list__menu li:hover {
+    background-color: #706f6f;
+}
+
+main aside .list__menu li.active {
+    color: #fcb128;
+}
+
+/*────────────────────────────────────
+  admin main section Layout
+────────────────────────────────────*/
+

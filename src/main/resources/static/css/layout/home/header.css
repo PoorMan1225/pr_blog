@@ -13,6 +13,7 @@ header .header__container {
     max-width: var(--main-max-width, 1500px);
     padding: var(--header-padding);
     color: var(--header-font-color);
+
     margin: 0 auto;      /* 가운데정렬 */
     display: flex;
     justify-content: space-between;
@@ -78,7 +79,7 @@ header .header__nav .nav__menu .nav__icon {
 
 header .header__nav .nav__menu .icon__close,
 header .header__nav .nav__menu .icon__menu {
-    background: url("../../icon/close.svg");
+    background: url("../../../icon/close.svg");
     opacity: 1;
     transform: scale(1);
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -89,11 +90,11 @@ header .header__nav .nav__menu .icon__menu {
 }
 
 header .header__nav .nav__menu .icon__close {
-    background: url("../../icon/close.svg");
+    background: url("../../../icon/close.svg");
 }
 
 header .header__nav .nav__menu .icon__menu {
-    background: url("../../icon/menu.svg");
+    background: url("../../../icon/menu.svg");
 }
 
 header .header__nav .nav__menu .icon__close.hide,

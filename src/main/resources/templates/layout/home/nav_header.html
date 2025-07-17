@@ -3,11 +3,17 @@
     <div class="header__container">
         <div class="header__title">
             <div class="header__logo" id="blog_icon"></div>
-            <span class="header__text">블로그타이틀</span>
+            <span class="header__text">
+                <a href="/">블로그타이틀</a>
+            </span>
         </div>
         <ul class="header__nav">
-            <li th:if="${!isAdmin}"><a href="/admin/login">로그인</a></li>
-            <li th:if="${isAdmin}"><a href="/admin/page">관리자</a></li>
+            <li th:if="${!isAdmin}">
+                <a href="/admin/login">로그인</a>
+            </li>
+            <li th:if="${isAdmin}">
+                <a href="/admin">관리자</a>
+            </li>
             <li><a href="/posts/recent-edit">최신 수정글</a></li>
             <li><a href="/posts/recent-create">최신 등록글</a></li>
             <li><a href="/about">개발자 소개</a></li>

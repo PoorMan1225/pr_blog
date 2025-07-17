@@ -1,0 +1,15 @@
+.category__container {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+}
+
+.category__container .title {
+    margin-bottom: 10px;
+    font-weight: 300;
+}
+
+.category__inner__container {
+    background-color: black;
+    height: 400px;
+}

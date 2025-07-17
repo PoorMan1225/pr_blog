@@ -1,7 +1,7 @@
 <div th:fragment="mobile_header(isAdmin)" class="mobile_nav__wrapper hide">
     <ul class="mobile__nav">
         <li th:if="${!isAdmin}"><a href="/admin/login">로그인</a></li>
-        <li th:if="${isAdmin}"><a href="/admin/page">관리자</a></li>
+        <li th:if="${isAdmin}"><a href="/admin">관리자</a></li>
         <hr>
         <li><a href="/posts/recent-edit">최신 수정글</a></li>
         <hr>

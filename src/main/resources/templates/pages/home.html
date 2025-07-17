@@ -7,15 +7,15 @@
     <title>blog home</title>
     <link rel="stylesheet" th:href="@{/css/base/variables.css}">
     <link rel="stylesheet" th:href="@{/css/base/common.css}">
-    <link rel="stylesheet" th:href="@{/css/layout/header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/home/header.css}">
     <link rel="stylesheet" th:href="@{/css/component/btn_updown.css}">
     <link rel="stylesheet" th:href="@{/css/pages/home.css}">
-    <link rel="stylesheet" th:href="@{/css/layout/mobile_header.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/home/mobile_header.css}">
 </head>
 <body>
 <div class="container">
-    <header th:replace="~{layout/nav_header.html::header(${isAdmin})}"></header>
-    <div th:replace="~{layout/nav_mobile.html::mobile_header(${isAdmin})}"></div>
+    <header th:replace="~{layout/home/nav_header.html::header(${isAdmin})}"></header>
+    <div th:replace="~{layout/home/nav_mobile.html::mobile_header(${isAdmin})}"></div>
     <main>
         <div class="main__inner">
             <div class="post__order">

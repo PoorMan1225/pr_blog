@@ -11,8 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @GetMapping("/page")
+    @GetMapping("")
     public String adminPage() {
         return "/pages/admin";
+    }
+
+    @GetMapping("/category")
+    public String sectionCategory() {
+        return "layout/admin/section_category :: category";
+    }
+
+    @GetMapping("/board")
+    public String sectionBoard() {
+        return "layout/admin/section_board :: board";
     }
 }
