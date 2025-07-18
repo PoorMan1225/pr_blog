@@ -1,28 +1,14 @@
-<div th:fragment="category" class="category__container">
-    <h2 class="title">카테고리 관리</h2>
-    <div class="category__inner__container">
-        <div class="category__header">
-            <p>드래그 드롭으로 카테고리 순서를 변경할 수 있습니다.</p>
-        </div>
-        <div class="category__drag__container">
-            <ul class="category__controller">
-                <li class="category__root">
-                    <div class="left">
-                        <div class="icons">
-                            <div class="icon__block">
-                                <span class="icon"></span>
-                            </div>
-                        </div>
-                        <span class="text">분류 전체보기</span>
-                    </div>
-                    <div class="right">
-                        <div class="btns__default">
-                            <button data-type="add">추가</button>
-                        </div>
-                    </div>
-                </li>
-                <!--/* 레벨 1 부터는 달 수 있지만 2부터는 불가능 */-->
-                <li class="category__item">
+document.addEventListener("DOMContentLoaded", function () {
+    const $btns = document.querySelectorAll('.category__root .btns__default button');
+    console.log($btns);
+    const $categoryController = document.querySelector('.category__root .category__controller');
+    $btns.forEach(($btn) => {
+        console.log($btn);
+        $btn.addEventListener('click', function (ev){
+            console.log(ev);
+            const type = ev.target.dataset.type;
+            if(type === 'add') {
+              const childItem = `<li class="category__item">
                     <div class="left">
                         <div class="icons">
                             <div class="icon__block subtree">
@@ -58,15 +44,9 @@
                             <button>확인</button>
                         </div>
                     </div>
-                </li>
-            </ul>
-            <button class="btn__category">
-                <span class="add__icon"></span>
-                카테고리 추가
-                <span class="count__total">
-                     <span class="txt__num">4</span> / 500
-                 </span>
-            </button>
-        </div>
-    </div>
-</div>
+                </li>`;
+              $categoryController.insertAdjacentElement('beforeend', childItem);
+            }
+        });
+    });
+});

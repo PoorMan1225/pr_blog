@@ -1,15 +1,229 @@
 .category__container {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: 0;
+    width: 100%;
+    user-select: none;
 }
 
 .category__container .title {
+    font-size: 20px;
     margin-bottom: 10px;
     font-weight: 300;
 }
 
 .category__inner__container {
-    background-color: black;
+    background-color: var(--admin-main-section-category-background-color);
     height: 400px;
+    padding: 20px;
+}
+
+.category__inner__container .category__header {
+    padding: 5px;
+    height: 40px;
+    margin-bottom: 20px;
+}
+
+.category__inner__container .category__header p {
+    font-size: 13px;
+    color: white;
+}
+
+.category__inner__container .category__drag__container {
+    padding: 20px;
+    background-color: #222222;
+}
+
+.category__inner__container .category__header {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+/*────────────────────────────────────
+  드래그 contrroller 부분
+────────────────────────────────────*/
+
+.category__drag__container .category__controller li {
+    height: 50px;
+    background-color: #484646;
+    border: 1px solid black;
+}
+
+.category__controller li:hover {
+    border: 1px solid #a1a0a0;
+}
+
+.category__controller .icons {
+    display: flex;
+    flex-direction: row;
+}
+
+.category__controller .icon__block {
+    width: 30px;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.category__controller .category__item,
+.category__controller .category__root {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.category__controller li .left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+}
+
+.category__controller li .left .text {
+    font-size: 14px;
+    color: white;
+    font-weight: 300;
+}
+
+.category__controller li .left button {
+    display: flex;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    margin-left: 15px;
+    color: white;
+    font-size: 12px;
+}
+
+.category__controller li .left .select__container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 40px;
+}
+
+.category__controller li .left .select__container .select__menus {
+    width: 148px;
+    position: absolute;
+    box-shadow: 0 0 3px 1px gray;
+    display: none;
+    top: 100%; /* 부모의 아래쪽 바로 다음 */
+    left: 0;
+}
+
+.category__controller li .left .select__container .select__menus.open {
+    display: block;
+}
+
+.category__controller li .left .select__container .select__menus li {
+    width: 100%;
+    border: none;
+    font-size: 12px;
+    height: 30px;
+    color: white;
+    text-align: start;
+    padding: 5px 0 5px 20px;
+}
+
+.category__controller li .left .select__container .select__menus li:hover {
+    background: #c4bfbf;
+    cursor: pointer;
+}
+
+.category__controller li .right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.category__controller li .left button .icon__dropdown {
+    background: url("../../../icon/arrow_drop_down.svg");
+    width: 20px;
+    height: 20px;
+}
+
+.category__controller li .right .btns__default,
+.category__controller li .right .btns__edit {
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.category__controller li .right .btns__default {
+    display: none;
+}
+
+.category__controller li .right .btns__default button {
+    width: 40px;
+    height: 20px;
+    font-size: 11px;
+    border: 1px solid #706f6f;
+    outline: none;
+    cursor: pointer;
+}
+
+.category__controller li .right .btns__default button:hover {
+    box-shadow: 0 0 1px 1px white;
+}
+
+.category__controller li:hover .right .btns__default {
+    display: flex;
+}
+
+.category__controller li .right .btns__edit button {
+    width: 60px;
+    height: 30px;
+    font-size: 11px;
+    border: 1px solid #706f6f;
+    outline: none;
+    cursor: pointer;
+}
+
+.category__controller li form input {
+    width: 300px;
+    height: 40px;
+    border: 1px solid black;
+    margin-left: 3px;
+    padding: 3px;
+    font-size: 15px;
+}
+
+.category__controller .icons {
+    height: 100%;
+}
+
+.category__controller .icon__block.subtree {
+    background: #706f6f;
+}
+
+.category__controller .icon__block.edit {
+    display: none;
+}
+
+.category__controller .icon__block .arrow_icon,
+.category__controller .icon__block .icon {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-size: contain; /* or cover */
+}
+
+.category__controller .icon__block .none {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    background-size: contain; /* or cover */
+}
+
+.category__controller .icon__block .icon {
+    background: url("../../../icon/menu.svg") no-repeat center;
+}
+
+.category__container .icon__block .none {
+    background: url("../../../icon/none.svg") no-repeat center;
+}
+
+.category__controller .icon__block .arrow_icon {
+    background: url("../../../icon/arrow_right.svg") no-repeat center;
 }

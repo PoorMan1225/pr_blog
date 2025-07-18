@@ -46,10 +46,14 @@ public class SecurityConfig {
                                         "/admin/login"
                                 )
                                 .permitAll()
-//                        .requestMatchers("/planner/**").hasAnyRole("USER")
+                                .requestMatchers("/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 );
+
+        http
+                .exceptionHandling(exception ->
+                        exception.accessDeniedHandler(new AdminAccessDeniedHandler()));
 
         http
                 // 스프링 시큐리티가 제공해주는 기본 폼

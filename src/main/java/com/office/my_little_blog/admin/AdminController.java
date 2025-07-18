@@ -13,16 +13,19 @@ public class AdminController {
 
     @GetMapping("")
     public String adminPage() {
+        log.info("adminPage()");
         return "/pages/admin";
     }
 
     @GetMapping("/category")
     public String sectionCategory() {
+        log.info("sectionCategory()");
         return "layout/admin/section_category :: category";
     }
 
     @GetMapping("/board")
     public String sectionBoard() {
+        log.info("sectionBoard()");
         return "layout/admin/section_board :: board";
     }
 }

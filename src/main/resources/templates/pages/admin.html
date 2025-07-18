@@ -28,23 +28,19 @@
                         콘텐츠
                     </strong>
                     <ul class="list__menu">
-                        <li>
-                            <a href="" class="link__menu">글 관리</a>
-                        </li>
-                        <li>
-                            <a href="/admin/board" class="link__menu">페이지 관리</a>
-                        </li>
-                        <li>
-                            <a href="/admin/category" class="link__menu">카테고리 관리</a>
-                        </li>
+                        <li class="menu" data-url="/admin/board">글 관리</li>
+                        <li class="menu" data-url="/admin/page">페이지 관리</li>
+                        <li class="menu" data-url="/admin/category">카테고리 관리</li>
                     </ul>
                 </div>
             </div>
         </aside>
         <!-- 섹션은 누르는 것에 따라 변경된다. -->
-        <section th:replace="~{layout/admin/section_category.html}"></section>
+        <section class="main__section"></section>
     </main>
 </div>
-<script src="/js/pages/admin.js"></script>
+<script th:src="@{/js/utils/api.js}" type="module" ></script>
+<script th:src="@{/js/pages/admin.js}" type="module"></script>
+<script th:src="@{/js/layout/admin/section_category.js}" type="module"></script>
 </body>
 </html>

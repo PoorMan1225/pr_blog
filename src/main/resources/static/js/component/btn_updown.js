@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const $btnDown = document.querySelector('.btn__down');
     
     $btnUp.addEventListener('click', (ev) => {
-        console.log(ev);
         // 기본 동작 (예: 부드럽게 위로 스크롤)
         window.scrollTo({top: 0, behavior: 'smooth'});
         

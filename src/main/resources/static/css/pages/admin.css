@@ -8,26 +8,26 @@
 ────────────────────────────────────*/
 
 main {
-    width: 1150px;
-    padding: 20px 20px 20px 20px;
+    width: var(--admin-main-width);
+    padding: var(--admin-main-padding);
     margin: 0 auto;
     background-color: #fcb128;
     display: flex;
-    gap: 50px;
+    gap: var(--admin-main-gap);
 }
 
 main aside {
-    width: 216px;
+    width: var(--admin-aside-width);
     height: 100vh;
 }
 
 main aside .box__post {
     width: 100%;
-    height: 45px;
+    height: var(--admin-aside-post-box-height);
     background-color: white;
     border: 1px solid #706f6f;
     text-align: start;
-    line-height: 45px;
+    line-height: var(--admin-aside-post-box-height);
     padding-left: 10px;
     cursor: pointer;
     margin-bottom: 5px;
@@ -35,6 +35,7 @@ main aside .box__post {
 }
 
 main aside .box__post span {
+    font-size: 14px;
     user-select: none;
 }
 
@@ -44,10 +45,14 @@ main aside .box__post:hover {
 
 main aside .managed__container {
     width: 100%;
-    background-color: black;
+    background-color: var(--admin-aside-managed-container-background-color);
     color: white;
     padding: 15px;
     border: 1px solid #706f6f;
+}
+
+main aside .managed__container .list__menu li {
+    transition: color 0.3s ease;
 }
 
 main aside .title__menu {
@@ -59,8 +64,8 @@ main aside .title__menu {
 
 main aside .title__menu span {
     display: block;
-    width: 24px;
-    height: 24px;
+    width: var(--admin-aside-category-title-icon-size);
+    height: var(--admin-aside-category-title-icon-size);
     vertical-align: middle; /* 텍스트와 수직 정렬 맞출 때 */
     background: url("../../icon/arrow_up.svg");
     align-items: start;
@@ -69,7 +74,7 @@ main aside .title__menu span {
 
 main aside .list__menu li {
     padding: 4px 0px 4px 30px;
-    font-size: 12px;
+    font-size: var(--admin-aside-category-font-size);
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -79,10 +84,15 @@ main aside .list__menu li:hover {
 }
 
 main aside .list__menu li.active {
-    color: #fcb128;
+    color: var(--admin-aside-category-menu-active-color);
 }
 
 /*────────────────────────────────────
   admin main section Layout
 ────────────────────────────────────*/
 
+main section {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+}

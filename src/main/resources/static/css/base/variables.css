@@ -29,7 +29,7 @@
     --main-post-grid-row-height: 300px;
     --main-post-order-color: #a8a5a5;
     --main-post-order-hover-color: #d7d5d5;
-    --main-post-order-padding : 10px;
+    --main-post-order-padding: 10px;
 
     /*** main post item ***/
     --main-post-item-padding: 10px;
@@ -62,4 +62,21 @@
     --login-form-input-height: 50px;
     --login-form-input-clear-button-size: 24px;
     --login-input-padding: 10px calc(10px + var(--login-form-input-clear-button-size)) 10px 10px;
+
+    /* admin */
+    /** main **/
+    --admin-main-width: 1150px;
+    --admin-main-padding: 20px 20px 20px 20px;
+    --admin-main-gap: 50px;
+
+    /** aside **/
+    --admin-aside-width: 216px;
+    --admin-aside-post-box-height: 40px;
+    --admin-aside-category-title-icon-size: 24px;
+    --admin-aside-category-font-size: 12px;
+    --admin-aside-managed-container-background-color: #151414;
+    --admin-aside-category-menu-active-color: #fcb128;
+
+    /** section **/
+    --admin-main-section-category-background-color: #151414;
 }
