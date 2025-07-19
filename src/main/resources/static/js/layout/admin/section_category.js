@@ -1,172 +1,203 @@
+import generateUUID from "../../utils/uuid.js";
+
 document.addEventListener("DOMContentLoaded", function () {
-    // 사이드 메뉴 클릭 이벤트 수신
-    window.addEventListener('sideMenuClick', (event) => {
-        const {section_title, url} = event.detail;
-        
-        if (url !== '/admin/category') return;
-        
-        const categoryMenuItem = {
-            'category-title': '게시글 제목',
-            'category-tag': '내용입니다',
-            categoryId: 3
-        };
-        const categoryList = [];  // 카테고리 정보 담는 리스트
-        const $categoryController = document.querySelector('.category__controller');
-        const $btns = document.querySelectorAll('.category__root .btns__default button');
-        
-        if (!$categoryController || $btns.length === 0) return;
-        
-        // 버튼 클릭 이벤트 (중복 방지)
-        $btns.forEach(($btn) => {
-            $btn.addEventListener('click', function (ev) {
-                const type = ev.target.dataset.type;
-                
-                if (type === 'add') {
-                    const $li = createCategoryItem();
-                    const $input = $li.querySelector('input[type="text"]');
-                    const $selectedBox = $li.querySelector('.selected__title');
-                    $categoryController.appendChild($li);
-                    
-                    // form event binding
-                    const $btnsEdits = $li.querySelector('.btns__edit');
-                    $btnsEdits.addEventListener('click', function (ev) {
-                        const className = ev.target.className;
-                        const dataType = $li.dataset.type;
-                        if (className === 'btn__cancel') {
-                            // 타입이 그냥 추가일 경우 노드 요소 삭제
-                            if (dataType === 'add') {
-                                $li.remove();
-                            } else if (dataType === 'edit') {
-                                $li.dataset.type = 'confirm';
-                                $input.disabled = true;
-                            }
-                        }
-                        
-                        if (className === 'btn__confirm') {
-                            console.log(className);
-                            $li.dataset.type = 'confirm';
-                            // todo 슬슬 데이터 동기화 해야할듯.
-                            // $selectedBox.textContent = ''
-                            // input 입력 비활성화
-                            $input.disabled = true;
-                        }
-                    });
-                    const $btnDefaults = $li.querySelector('.btns__default');
-                    $btnDefaults.addEventListener('click', function (ev) {
-                        console.log(ev);
-                        const className = ev.target.className;
-                        if (className === 'btn__add') {
-                            // todo 자식노드 바인딩 시켜야함
-                        } else if (className === 'btn__edit') {
-                            $li.dataset.type = 'edit';
-                            $input.disabled = false;
-                        } else if (className === 'btn__delete') {
-                            $li.remove();
-                        }
-                    });
-                    // Init 카테고리 input select menu binding
-                    bindingCategoryInputEvent($li);
-                    bindingSelectMenusEvent($li);
-                }
-            });
-        });
-    });
+    const categoryMap = {};
     
-    document.addEventListener('click', function (ev) {
-    
-    });
-    
-    // 💡 HTML 문자열 대신 DOM 요소로 생성
-    function createCategoryItem() {
-        const li = document.createElement('li');
-        li.className = 'category__item';
-        li.setAttribute('data-type', 'add');
-        li.innerHTML = `
-                    <div class="left">
-                        <div class="icons">
-                            <div class="icon__block subtree">
-                                <span class="none"></span>
-                            </div>
-                            <div class="icon__block drag">
-                                <span class="icon"></span>
-                            </div>
-                        </div>
-                        <label for="category__title">
-                            <input id="category__title" class="ellipsis" type="text">
-                        </label>
-                        <div class="selected__title__box">
-                            <span class="selected__title"></span>
-                        </div>
-                        <div class="select__container">
-                            <button>
-                                <span class="select__menu__title">주제 없음</span>
-                                <span class="icon__dropdown"></span>
-                            </button>
-                            <ul class="select__menus">
-                                <li>주제없음</li>
-                                <li>주제선정1</li>
-                                <li>주제선정2</li>
-                                <li>주제선정3</li>
-                                <li>주제선정4</li>
-                                <li>주제선정5</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="right">
-                        <div class="btns__edit">
-                            <button class="btn__cancel">취소</button>
-                            <button disabled class="btn__confirm">확인</button>
-                        </div>
-                        <div class="btns__default">
-                            <button class="btn__add">추가</button>
-                            <button class="btn__edit">수정</button>
-                            <button class="btn__delete">삭제</button>
-                        </div>
-                    </div>`;
-        return li;
-    }
-    
-    // Init 카테고리 input select menu binding
-    function bindingSelectMenusEvent($li) {
-        // 주제선정 메뉴 설정
-        const $selectContainer = $li.querySelector('.select__container');
-        const $btnSelect = $selectContainer.querySelector('button');
-        const $selectMenuTitle = $selectContainer.querySelector('.select__menu__title');
+    document.addEventListener("click", function (event) {
+        const $target = event.target;
         
-        if (!$selectContainer || !$btnSelect || !$selectMenuTitle) return;
+        // root 에서 추가 버튼 누를시 동작
+        if ($target.closest('.category__root .btns__default button')) {
+            const type = $target.dataset.type;
+            if (type !== "add") return;
+            
+            const id = generateUUID();
+            const item = new CategoryMenuItem();
+            categoryMap[id] = item;
+            
+            const $li = createCategoryItem(id, item);
+            document.querySelector(".category__controller").appendChild($li);
+        }
         
-        function selectMenuToggle() {
-            // dropdown toggle
-            if ($selectContainer.classList.contains('active')) {
-                $selectContainer.classList.remove('active');
+        // 버튼 타입별 분기 처리
+        if ($target.closest(".btn__add")) {
+            const $li = $target.closest(".category__item");
+            if (!$li) return;
+            const parentId = $li.id;
+            const childId = generateUUID();
+            const childItem = new CategoryMenuItem(parentId);
+            categoryMap[childId] = childItem;
+            
+            const $childLi = createCategoryItem(childId, childItem);
+            $childLi.querySelector(".btn__add").style.display = 'none';              // 자식은 추가 버튼 없음
+            $childLi.querySelector('.select__container').style.display = 'none';     // 자식은 주제 선택 없음
+            $childLi.querySelector('.selected__title__box').style.display = 'none';  // 자식은 주제 선택 없음
+            $childLi.querySelector('.icon__block.subtree').style.display = 'none';
+            
+            // 형제 요소를 만들고 자식을 삽임
+            const next = $li.nextElementSibling;
+            const isContainer = next ? next.classList.contains('child__container') : false;
+            let $listSub;
+            if (!isContainer) {
+                $listSub = document.createElement('div');
+                $listSub.className = 'child__container';
+                $listSub.style.marginLeft = '50px';
+                $li.insertAdjacentElement("afterend", $listSub);
+            }
+            $listSub = $li.nextElementSibling;
+            $listSub.appendChild($childLi);
+            
+            // arrow 접기 기능 추가해야함.
+            const $parentLi = $li.closest('li');
+            if(!$parentLi) return;
+            $parentLi.querySelector('.icon__block.subtree span')
+                .classList.replace('none', 'arrow_icon');
+        }
+        
+        if ($target.closest(".btn__edit")) {
+            const $li = $target.closest(".category__item");
+            const $input = $li.querySelector("input[type='text']");
+            const $btnConfirm = $li.querySelector(".btn__confirm");
+            
+            $li.dataset.type = "edit";
+            $input.disabled = false;
+            $btnConfirm.disabled = true;
+        }
+        
+        if ($target.closest(".btn__delete")) {
+            const $li = $target.closest(".category__item");
+            if (!$li) return;
+            // 자식일 경우 하나만 지우고
+            const parentId = categoryMap[$li.id].parentId;
+            if (parentId) {
+                delete categoryMap[$li.id];
+                $li.remove();
+                return;
+            }
+            // 부모 일경우 자식들을 찾아서 하나씩 지워줘야 한다.
+            const $next = $li.nextElementSibling;
+            const isContainer = $next ? $next.classList.contains('child__container') : false;
+            $next.querySelectorAll('li').forEach(($childLi) => {
+                delete categoryMap[$childLi.id];
+                $childLi.remove();
+            })
+            $li.remove();
+        }
+        
+        if ($target.closest(".btn__cancel")) {
+            const $li = $target.closest(".category__item");
+            const $input = $li.querySelector("input[type='text']");
+            if ($li.dataset.type === "add") {
+                $li.remove();
             } else {
-                $selectContainer.classList.add('active');
+                $li.dataset.type = "confirm";
+                $input.disabled = true;
             }
         }
         
-        $btnSelect.addEventListener('click', function (ev) {
-            const $btn = ev.target;
-            selectMenuToggle();
-        });
+        if ($target.closest(".btn__confirm")) {
+            const $li = $target.closest(".category__item");
+            const item = categoryMap[$li.id];
+            const $input = $li.querySelector("input[type='text']");
+            const $selectedBox = $li.querySelector(".selected__title");
+            
+            if (!item.categoryTitle.trim()) return;
+            $li.dataset.type = "confirm";
+            // 자식 노드는 selectedBox 없음
+            if($selectedBox) $selectedBox.textContent = item.categoryTag;
+            $input.disabled = true;
+        }
         
-        // menus li 바인딩
-        const $selectMenus = $li.querySelector('.select__menus');
-        $selectMenus.addEventListener('click', function (ev) {
-            $selectMenuTitle.textContent = ev.target.textContent;
-            selectMenuToggle();
-        });
+        if ($target.closest(".select__container button")) {
+            const $container = $target.closest(".select__container");
+            $container.classList.toggle("active");
+        }
+        
+        if ($target.closest(".select__menus li")) {
+            const $li = $target.closest(".category__item");
+            const $container = $li.querySelector(".select__container");
+            const $title = $container.querySelector(".select__menu__title");
+            const value = $target.textContent;
+            
+            categoryMap[$li.id].updateTag(value);
+            $title.textContent = value;
+            $container.classList.remove("active");
+        }
+    });
+    
+    document.addEventListener("input", function (event) {
+        const $input = event.target;
+        if (!$input.matches("input[type='text']")) return;
+        
+        const $li = $input.closest(".category__item");
+        const $btnConfirm = $li.querySelector(".btn__confirm");
+        const text = $input.value.trim();
+        
+        categoryMap[$li.id].updateTitle(text);
+        $btnConfirm.disabled = !text;
+    });
+    
+    class CategoryMenuItem {
+        constructor(parentId = null, title = "", tag = "주제 없음") {
+            this.parentId = parentId;
+            this.categoryTitle = title;
+            this.categoryTag = tag;
+        }
+        
+        updateTag(tag) {
+            this.categoryTag = tag;
+        }
+        
+        updateTitle(title) {
+            this.categoryTitle = title;
+        }
     }
     
-    // Input 카테고리 이벤트 바인딩
-    function bindingCategoryInputEvent($li) {
-        const $btnConfirm = $li.querySelector('.right .btn__confirm');
-        const $input = $li.querySelector('input[type="text"]');
-        
-        if (!$btnConfirm || !$input) return;
-        
-        $input.addEventListener('input', function (ev) {
-            const text = ev.target.value.trim();
-            $btnConfirm.disabled = text.length <= 0;
-        });
+    function bindEventsToItem($li, item, id) {
+        // 바인딩은 document level 에서 처리되므로 생략 가능
+    }
+    
+    function createCategoryItem(id, categoryItem) {
+        const li = document.createElement("li");
+        li.className = "category__item";
+        li.id = id;
+        li.dataset.type = "add";
+        li.innerHTML = `
+      <div class="left">
+        <div class="icons">
+          <div class="icon__block subtree"><span class="none"></span></div>
+          <div class="icon__block drag"><span class="icon"></span></div>
+        </div>
+        <label><input class="ellipsis" type="text"></label>
+        <div class="selected__title__box">
+          <span class="selected__title"></span>
+        </div>
+        <div class="select__container">
+          <button>
+            <span class="select__menu__title">${categoryItem.categoryTag}</span>
+            <span class="icon__dropdown"></span>
+          </button>
+          <ul class="select__menus">
+            <li>주제없음</li>
+            <li>주제선정1</li>
+            <li>주제선정2</li>
+            <li>주제선정3</li>
+            <li>주제선정4</li>
+            <li>주제선정5</li>
+          </ul>
+        </div>
+      </div>
+      <div class="right">
+        <div class="btns__edit">
+          <button class="btn__cancel">취소</button>
+          <button disabled class="btn__confirm">확인</button>
+        </div>
+        <div class="btns__default">
+          <button class="btn__add">추가</button>
+          <button class="btn__edit">수정</button>
+          <button class="btn__delete">삭제</button>
+        </div>
+      </div>`;
+        return li;
     }
 });

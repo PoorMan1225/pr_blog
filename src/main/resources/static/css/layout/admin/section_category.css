@@ -239,7 +239,7 @@
     box-shadow: 0 0 1px 1px white;
 }
 
-.category__controller .category__item .right .btn__confirm:disabled {
+.category__controller .category__item .right button:disabled {
     border: 1px solid #868686;
     color: #868686;
     cursor: not-allowed;
@@ -307,6 +307,13 @@
     width: 15px;
     height: 15px;
     background: url("../../../icon/arrow_right.svg") no-repeat center;
+    transform: rotate(90deg);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.category__controller .icon__block .arrow_icon .active {
+    transform: rotate(0deg);
 }
 
 .category__controller .icon__block .none {

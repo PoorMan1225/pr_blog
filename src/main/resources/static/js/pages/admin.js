@@ -1,5 +1,6 @@
 import {apiFetch} from "../utils/api.js";
 
+
 document.addEventListener("DOMContentLoaded", function () {
     const $listMenus = document.querySelectorAll('.managed__container .list__menu li');
     const $mainSection = document.querySelector('.container .main__section');
