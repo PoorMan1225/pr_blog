@@ -1,3 +1,6 @@
+/*────────────────────────────────────
+  1. 컨테이너 및 기본 레이아웃
+────────────────────────────────────*/
 .category__container {
     width: 100%;
     user-select: none;
@@ -11,14 +14,20 @@
 
 .category__inner__container {
     background-color: var(--admin-main-section-category-background-color);
-    height: 400px;
     padding: 20px;
 }
 
+/*────────────────────────────────────
+  2. 헤더
+────────────────────────────────────*/
 .category__inner__container .category__header {
     padding: 5px;
     height: 40px;
     margin-bottom: 20px;
+
+    display: flex;
+    justify-content: start;
+    align-items: center;
 }
 
 .category__inner__container .category__header p {
@@ -26,23 +35,16 @@
     color: white;
 }
 
+/*────────────────────────────────────
+  3. 드래그 컨테이너
+────────────────────────────────────*/
 .category__inner__container .category__drag__container {
     padding: 20px;
     background-color: #222222;
 }
 
-.category__inner__container .category__header {
-    display: flex;
-    justify-content: start;
-    align-items: center;
-}
-
-/*────────────────────────────────────
-  드래그 contrroller 부분
-────────────────────────────────────*/
-
 .category__drag__container .category__controller li {
-    height: 50px;
+    height: 45px;
     background-color: #484646;
     border: 1px solid black;
 }
@@ -51,19 +53,9 @@
     border: 1px solid #a1a0a0;
 }
 
-.category__controller .icons {
-    display: flex;
-    flex-direction: row;
-}
-
-.category__controller .icon__block {
-    width: 30px;
-    display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-}
-
+/*────────────────────────────────────
+  4. 리스트 및 아이템 구조
+────────────────────────────────────*/
 .category__controller .category__item,
 .category__controller .category__root {
     width: 100%;
@@ -71,6 +63,32 @@
     justify-content: space-between;
 }
 
+.category__item[data-type="confirm"] .select__container,
+.category__item[data-type="confirm"] .btns__edit {
+    display: none !important;
+}
+.category__item[data-type="confirm"] input:disabled {
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+.category__item[data-type="confirm"]:hover .btns__default {
+    display: flex !important;
+}
+.category__item[data-type="add"] .selected__title__box,
+.category__item[data-type="edit"] .selected__title__box{
+    display: none !important;
+}
+
+.category__item[data-type="add"] .icon__block.drag,
+.category__item[data-type="edit"] .icon__block.drag{
+    display: none !important;
+}
+
+/*────────────────────────────────────
+  5. 왼쪽 영역 (텍스트, 버튼, 셀렉트)
+────────────────────────────────────*/
 .category__controller li .left {
     display: flex;
     justify-content: center;
@@ -96,6 +114,26 @@
     font-size: 12px;
 }
 
+.category__item .selected__title__box {
+    margin-left: 20px;
+    text-align: center;
+    font-size: 12px;
+    color: white;
+}
+
+.category__item .selected__title__box .selected__title::before {
+    display: inline-block;
+    width: 1px;
+    height: 18px;
+    margin-right: 15px;
+    background: white;
+    vertical-align: top;
+    content: "";
+}
+
+/*────────────────────────────────────
+  6. 셀렉트 메뉴 부분
+────────────────────────────────────*/
 .category__controller li .left .select__container {
     display: flex;
     align-items: center;
@@ -108,12 +146,28 @@
     position: absolute;
     box-shadow: 0 0 3px 1px gray;
     display: none;
+    z-index: 4;
     top: 100%; /* 부모의 아래쪽 바로 다음 */
     left: 0;
 }
 
-.category__controller li .left .select__container .select__menus.open {
+/* active 될시 주제선정 목록 보여줌 */
+.category__controller .category__item .select__container.active .select__menus {
     display: block;
+}
+
+.category__controller .category__item .select__container .icon__dropdown {
+    background: url("../../../icon/arrow_drop_down.svg");
+    width: 15px;
+    height: 15px;
+}
+
+.category__controller .category__item .select__container .icon__dropdown {
+    transition: transform 0.3s ease;
+}
+
+.category__controller .category__item .select__container.active .icon__dropdown {
+    transform: rotate(180deg);
 }
 
 .category__controller li .left .select__container .select__menus li {
@@ -131,16 +185,13 @@
     cursor: pointer;
 }
 
+/*────────────────────────────────────
+  7. 오른쪽 영역 (버튼들)
+────────────────────────────────────*/
 .category__controller li .right {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.category__controller li .left button .icon__dropdown {
-    background: url("../../../icon/arrow_drop_down.svg");
-    width: 20px;
-    height: 20px;
 }
 
 .category__controller li .right .btns__default,
@@ -167,7 +218,11 @@
     box-shadow: 0 0 1px 1px white;
 }
 
-.category__controller li:hover .right .btns__default {
+.category__controller .category__root:hover .right .btns__default {
+    display: flex;
+}
+
+.category__controller .category__item.add:hover .right .btns__default {
     display: flex;
 }
 
@@ -175,22 +230,56 @@
     width: 60px;
     height: 30px;
     font-size: 11px;
-    border: 1px solid #706f6f;
+    border: 1px solid #181818;
     outline: none;
     cursor: pointer;
 }
 
-.category__controller li form input {
+.category__controller li .right .btns__edit button:not(:disabled):hover {
+    box-shadow: 0 0 1px 1px white;
+}
+
+.category__controller .category__item .right .btn__confirm:disabled {
+    border: 1px solid #868686;
+    color: #868686;
+    cursor: not-allowed;
+    background-color: white;
+}
+
+/*────────────────────────────────────
+  8. 입력 필드
+────────────────────────────────────*/
+.category__controller li input {
     width: 300px;
-    height: 40px;
+    height: 35px;
     border: 1px solid black;
     margin-left: 3px;
     padding: 3px;
     font-size: 15px;
 }
 
+.category__controller li input.ellipsis {
+    width: 200px;              /* 너비 고정 */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/*────────────────────────────────────
+  9. 아이콘 영역
+────────────────────────────────────*/
 .category__controller .icons {
+    display: flex;
+    flex-direction: row;
     height: 100%;
+}
+
+.category__controller .icon__block {
+    width: 30px;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 .category__controller .icon__block.subtree {
@@ -202,28 +291,30 @@
 }
 
 .category__controller .icon__block .arrow_icon,
-.category__controller .icon__block .icon {
+.category__controller .icon__block .icon,
+.category__controller .icon__block .none {
     display: inline-block;
+    background-size: contain; /* or cover */
+}
+
+.category__controller .icon__block .icon {
     width: 15px;
     height: 15px;
-    background-size: contain; /* or cover */
+    background: url("../../../icon/menu.svg") no-repeat center;
+}
+
+.category__controller .icon__block .arrow_icon {
+    width: 15px;
+    height: 15px;
+    background: url("../../../icon/arrow_right.svg") no-repeat center;
 }
 
 .category__controller .icon__block .none {
-    display: inline-block;
     width: 5px;
     height: 5px;
-    background-size: contain; /* or cover */
-}
-
-.category__controller .icon__block .icon {
-    background: url("../../../icon/menu.svg") no-repeat center;
+    background: url("../../../icon/none.svg") no-repeat center;
 }
 
 .category__container .icon__block .none {
     background: url("../../../icon/none.svg") no-repeat center;
-}
-
-.category__controller .icon__block .arrow_icon {
-    background: url("../../../icon/arrow_right.svg") no-repeat center;
 }

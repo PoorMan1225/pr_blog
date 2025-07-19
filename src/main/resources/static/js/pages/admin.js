@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", function () {
             $li.classList.add('active');
             
             const url = $li.dataset.url;
-            
             // 비동기로 html 받기
             try {
                 $mainSection.innerHTML = await apiFetch(url,
@@ -28,7 +27,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 // side 메뉴 클릭시 발생 커스텀 이벤트
                 const title = $menu.textContent;
                 window.dispatchEvent(new CustomEvent("sideMenuClick", {
-                    detail: {section_title: title}
+                    detail: {
+                        section_title: title,
+                        url: url
+                    }
                 }));
             } catch (err) {
                 console.log(err);

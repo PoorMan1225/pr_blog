@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 @Slf4j
 @Configuration
@@ -37,33 +38,38 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable());
         http
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers(
-                                        "/",
-                                        "/css/**",
-                                        "/icon/**",
-                                        "/img/**",
-                                        "/js/**",
-                                        "/admin/login"
-                                )
-                                .permitAll()
-                                .requestMatchers("/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                .anyRequest()
-                                .authenticated()
+                        .requestMatchers(
+                                "/",
+                                "/css/**",
+                                "/icon/**",
+                                "/img/**",
+                                "/js/**",
+                                "/admin/login"
+                        )
+                        .permitAll()
+                        .requestMatchers("/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .anyRequest()
+                        .authenticated()
                 );
 
         http
-                .exceptionHandling(exception ->
-                        exception.accessDeniedHandler(new AdminAccessDeniedHandler()));
+                .exceptionHandling(
+                        exception ->
+                                exception
+                                        .accessDeniedHandler(new AdminAccessDeniedHandler())                                      // 권한없을때 권한 페이지 요청시 access deined
+                                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/admin/login") // 요청한 url 이 시큐리티 에 보안인데 로그인이 안되어있을경우 로그인 페이지로
+                         )
+                );
 
         http
                 // 스프링 시큐리티가 제공해주는 기본 폼
                 .formLogin(login -> login
-                                .loginPage("/admin/login")                        // 스프링 시큐리티가 제공해주는 기본 로그인 폼 대신에 우리가 지정한 로그인 폼 지정
-                                .loginProcessingUrl("/admin/login")               // 로그인 프로세스 를 진행할 url 설정
-                                .usernameParameter("login_id")                    // 폼에서 전달할 매핑 아이디 이름
-                                .passwordParameter("login_pwd")                   // 폼에서 전달할 매핑 pw 이름
-                                .successHandler(customSuccessHandler())
-                                .failureHandler(customFailerHandler())
+                        .loginPage("/admin/login")                        // 스프링 시큐리티가 제공해주는 기본 로그인 폼 대신에 우리가 지정한 로그인 폼 지정
+                        .loginProcessingUrl("/admin/login")               // 로그인 프로세스 를 진행할 url 설정
+                        .usernameParameter("login_id")                    // 폼에서 전달할 매핑 아이디 이름
+                        .passwordParameter("login_pwd")                   // 폼에서 전달할 매핑 pw 이름
+                        .successHandler(customSuccessHandler())
+                        .failureHandler(customFailerHandler())
                 );
 
         http
