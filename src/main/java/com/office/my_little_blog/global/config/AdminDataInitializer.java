@@ -8,14 +8,17 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-public class DataInitializer {
+public class AdminDataInitializer {
 
     private final AdminAuthorityRepository authorityRepository;
     private final AdminRepository adminRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     // 생성자 주입을 통해 필요한 리포지토리와 PasswordEncoder를 가져옵니다.
-    public DataInitializer(AdminAuthorityRepository authorityRepository, AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
+    public AdminDataInitializer(AdminAuthorityRepository authorityRepository,
+                                AdminRepository adminRepository,
+                                PasswordEncoder passwordEncoder) {
         this.authorityRepository = authorityRepository;
         this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;

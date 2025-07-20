@@ -24,7 +24,6 @@
     padding: 5px;
     height: 40px;
     margin-bottom: 20px;
-
     display: flex;
     justify-content: start;
     align-items: center;
@@ -42,15 +41,9 @@
     padding: 20px;
     background-color: #222222;
 }
-
-.category__drag__container .category__controller li {
-    height: 45px;
-    background-color: #484646;
-    border: 1px solid black;
-}
-
-.category__controller li:hover {
-    border: 1px solid #a1a0a0;
+.category__controller .category__root:hover,
+.category__controller .category__item:hover {
+    border: 1px solid #c2c0c0;
 }
 
 /*────────────────────────────────────
@@ -61,6 +54,10 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    height: 45px;
+    background-color: #484646;
+    border: 1px solid black;
 }
 
 .category__item[data-type="confirm"] .select__container,
@@ -89,7 +86,7 @@
 /*────────────────────────────────────
   5. 왼쪽 영역 (텍스트, 버튼, 셀렉트)
 ────────────────────────────────────*/
-.category__controller li .left {
+.category__controller div .left {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -97,13 +94,13 @@
     height: 100%;
 }
 
-.category__controller li .left .text {
+.category__controller div .left .text {
     font-size: 14px;
     color: white;
     font-weight: 300;
 }
 
-.category__controller li .left button {
+.category__controller .category__item .left button {
     display: flex;
     background-color: transparent;
     border: none;
@@ -134,17 +131,18 @@
 /*────────────────────────────────────
   6. 셀렉트 메뉴 부분
 ────────────────────────────────────*/
-.category__controller li .left .select__container {
+.category__controller .category__item .left .select__container {
     display: flex;
     align-items: center;
     position: relative;
     height: 40px;
 }
 
-.category__controller li .left .select__container .select__menus {
+.category__controller .category__item .left .select__container .select__menus {
     width: 148px;
     position: absolute;
     box-shadow: 0 0 3px 1px gray;
+    background-color: #484646;
     display: none;
     z-index: 4;
     top: 100%; /* 부모의 아래쪽 바로 다음 */
@@ -170,7 +168,7 @@
     transform: rotate(180deg);
 }
 
-.category__controller li .left .select__container .select__menus li {
+.category__controller .category__item .left .select__container .select__menus li {
     width: 100%;
     border: none;
     font-size: 12px;
@@ -180,7 +178,7 @@
     padding: 5px 0 5px 20px;
 }
 
-.category__controller li .left .select__container .select__menus li:hover {
+.category__controller .category__item .left .select__container .select__menus li:hover {
     background: #c4bfbf;
     cursor: pointer;
 }
@@ -188,24 +186,24 @@
 /*────────────────────────────────────
   7. 오른쪽 영역 (버튼들)
 ────────────────────────────────────*/
-.category__controller li .right {
+.category__controller div .right {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.category__controller li .right .btns__default,
-.category__controller li .right .btns__edit {
+.category__controller div .right .btns__default,
+.category__controller div .right .btns__edit {
     padding: 10px;
     justify-content: center;
     align-items: center;
 }
 
-.category__controller li .right .btns__default {
+.category__controller div .right .btns__default {
     display: none;
 }
 
-.category__controller li .right .btns__default button {
+.category__controller div .right .btns__default button {
     width: 40px;
     height: 20px;
     font-size: 11px;
@@ -214,7 +212,7 @@
     cursor: pointer;
 }
 
-.category__controller li .right .btns__default button:hover {
+.category__controller div .right .btns__default button:hover {
     box-shadow: 0 0 1px 1px white;
 }
 
@@ -226,7 +224,7 @@
     display: flex;
 }
 
-.category__controller li .right .btns__edit button {
+.category__controller div .right .btns__edit button {
     width: 60px;
     height: 30px;
     font-size: 11px;
@@ -235,7 +233,7 @@
     cursor: pointer;
 }
 
-.category__controller li .right .btns__edit button:not(:disabled):hover {
+.category__controller div .right .btns__edit button:not(:disabled):hover {
     box-shadow: 0 0 1px 1px white;
 }
 
@@ -249,7 +247,7 @@
 /*────────────────────────────────────
   8. 입력 필드
 ────────────────────────────────────*/
-.category__controller li input {
+.category__controller .category__item input {
     width: 300px;
     height: 35px;
     border: 1px solid black;
@@ -258,7 +256,7 @@
     font-size: 15px;
 }
 
-.category__controller li input.ellipsis {
+.category__controller .category__item input.ellipsis {
     width: 200px;              /* 너비 고정 */
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -284,6 +282,7 @@
 
 .category__controller .icon__block.subtree {
     background: #706f6f;
+    cursor: pointer;
 }
 
 .category__controller .icon__block.edit {
@@ -309,10 +308,9 @@
     background: url("../../../icon/arrow_right.svg") no-repeat center;
     transform: rotate(90deg);
     transition: transform 0.3s ease;
-    cursor: pointer;
 }
 
-.category__controller .icon__block .arrow_icon .active {
+.category__controller .icon__block.subtree.active .arrow_icon  {
     transform: rotate(0deg);
 }
 
@@ -324,4 +322,61 @@
 
 .category__container .icon__block .none {
     background: url("../../../icon/none.svg") no-repeat center;
+}
+
+
+/*────────────────────────────────────
+  10. 카테고리 버튼
+────────────────────────────────────*/
+.category__drag__container .category__bottom__add {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 10px;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+    height: 60px;
+    border: 1px dotted #b9b9b9;
+    text-align: center;
+    background-color: transparent;
+    color: #b9b9b9;
+}
+
+.category__drag__container .category__bottom__add:hover {
+    border: 1px dotted white;
+    color: white;
+}
+
+.category__drag__container .category__bottom__add .left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.category__drag__container .category__bottom__add .left .add__icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url("../../../icon/add.svg") no-repeat center;
+}
+
+/*────────────────────────────────────
+  11. 변경사항 반영
+────────────────────────────────────*/
+.category__container .category__save__container {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    width: 100%;
+    height: 60px;
+    padding: 10px 20px 10px 0;
+    background: #222222;
+}
+
+.category__container .category__save__container button {
+    height: 100%;
+    width: 150px;
+    cursor: pointer;
 }

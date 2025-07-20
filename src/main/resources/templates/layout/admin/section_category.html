@@ -1,12 +1,12 @@
 <div th:fragment="category" class="category__container">
-    <h2 class="title">카테고리 관리</h2>
+    <h2 class="title"></h2>
     <div class="category__inner__container">
         <div class="category__header">
             <p>드래그 드롭으로 카테고리 순서를 변경할 수 있습니다.</p>
         </div>
         <div class="category__drag__container">
-            <ul class="category__controller">
-                <li class="category__root">
+            <div class="category__controller">
+                <div class="category__root">
                     <div class="left">
                         <div class="icons">
                             <div class="icon__block">
@@ -20,15 +20,20 @@
                             <button data-type="add">추가</button>
                         </div>
                     </div>
-                </li>
-            </ul>
-            <button class="btn__category">
-                <span class="add__icon"></span>
-                카테고리 추가
-                <span class="count__total">
-                     <span class="txt__num">4</span> / 500
-                 </span>
-            </button>
+                </div>
+            </div>
+            <div data-type="add" class="category__bottom__add">
+                <div class="left">
+                    <span class="add__icon"></span>
+                    <span>카테고리 추가</span>
+                </div>
+                <div class="right">
+                    <span class="txt__num">4</span> / 500
+                </div>
+            </div>
         </div>
+    </div>
+    <div class="category__save__container">
+        <button class="btn__save">변경사항 저장</button>
     </div>
 </div>
