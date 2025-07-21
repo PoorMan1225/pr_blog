@@ -8,6 +8,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 /**
  * Spring security 에서 AccessDeniedHandler 인터페이스를 구현한 클래스는
@@ -18,6 +19,11 @@ import java.io.IOException;
 public class AdminAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        final Enumeration<String> headerNames = request.getHeaderNames();
+        while(headerNames.hasMoreElements()) {
+            log.info(headerNames.nextElement());
+        }
+        log.info(accessDeniedException.getMessage());
         log.info("AdminAccessDeniedHandler : handle()");
         response.sendRedirect("/admin/login");
     }

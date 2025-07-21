@@ -47,7 +47,8 @@ public class SecurityConfig {
                                 "/admin/login"
                         )
                         .permitAll()
-                        .requestMatchers("/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers("/admin/**")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .anyRequest()
                         .authenticated()
                 );
@@ -58,7 +59,7 @@ public class SecurityConfig {
                                 exception
                                         .accessDeniedHandler(new AdminAccessDeniedHandler())                                      // 권한없을때 권한 페이지 요청시 access deined
                                         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/admin/login") // 요청한 url 이 시큐리티 에 보안인데 로그인이 안되어있을경우 로그인 페이지로
-                         )
+                                        )
                 );
 
         http
