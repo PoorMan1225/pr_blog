@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -34,8 +35,17 @@ public class CategoryDto {
     @JsonProperty("categoryTag")
     private Integer categoryTag;
 
-    @JsonProperty("isChanged")
+    @JsonProperty("state")
+    private CategoryState state;
+
+    @JsonProperty("orderNo")
+    private int orderNo;
+
+    @JsonProperty("state")
     private boolean isChanged;  // 이런 네이밍이면 isIsChanged 로 나오기 때문에 getter 규칙이 그래서 @JsonProperty로 만들어 줘야한다.
+
+    @JsonProperty("children")
+    private List<CategoryDto> children;
 
     public boolean hasParent() {
         return !Objects.isNull(parentId);

@@ -35,4 +35,11 @@ public class CategoryController {
         categoryService.updateCategories(categories);
         return new ResponseEntity<>(ApiResponse.ok("SAVE SUCCESS"), HttpStatus.OK);
     }
+
+    @GetMapping("/categories")
+    public ResponseEntity<ApiResponse<List<CategoryDto>>> getAllCategories() {
+        log.info("getAllCategories()");
+        List<CategoryDto> list = categoryService.getAllCategories();
+        return new ResponseEntity<>(ApiResponse.ok(list), HttpStatus.OK);
+    }
 }

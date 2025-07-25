@@ -23,7 +23,7 @@ export async function apiFetch(url, options = {}) {
     // 200 ~ 299 응답 ok 처리
     if (!response.ok) {
         // 요청 했는데 권한이 없을 경우 login page 로 이동
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) { // 권한 부족 또는 인증이 없을 경우 처리
             window.location.href = "/admin/login?expired=true"; // 로그인 페이지로 이동.
         }
         // 에러 처리

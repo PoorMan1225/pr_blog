@@ -4,6 +4,8 @@ import com.office.my_little_blog.global.exception.CategoryMappingException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Component
 public class CategoryMapper {
     private final CategoryTitleRepository titleRepository;
@@ -19,10 +21,21 @@ public class CategoryMapper {
 
         CategoryEntity categoryEntity = CategoryEntity.builder()
                 .title(titleEntity)
+                .orderNo(dto.getOrderNo())
                 .categoryTitle(dto.getCategoryTitle())
                 .build();
 
         if (dto.hasServerId()) categoryEntity.setNo(dto.getServerId());
         return categoryEntity;
+    }
+
+    public CategoryDto toDto(CategoryEntity entity) {
+        return CategoryDto.builder()
+                .categoryTag(entity.getTitle().getNo())
+                .state(CategoryState.DEFAULT)
+                .orderNo(entity.getOrderNo())
+                .serverId(entity.getNo())
+                .isChanged(false)
+                .build();
     }
 }

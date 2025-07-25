@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -31,43 +30,49 @@ public class CategoryService {
     }
 
     /**
+     * 모든 카테고리 Entity를 받아서 dto 로 변환 후 전달.
+     *
+     * @return
+     */
+    public List<CategoryDto> getAllCategories() {
+        List<CategoryEntity> categories = categoryRepository.findAll();
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        Map<Integer, CategoryDto> map = new HashMap<>();
+
+        for (CategoryEntity categoryEntity : categories) {
+            if (categoryEntity.getParent() == null) {
+                CategoryDto dto = categoryMapper.toDto(categoryEntity);
+                map.put(categoryEntity.getNo(), dto);
+                categoryDtoList.add(dto);
+            }
+        }
+
+        for (CategoryEntity categoryEntity : categories) {
+            if (categoryEntity.getParent() != null) {
+                CategoryDto parentDto = map.get(categoryEntity.getParent().getNo());
+                if (parentDto != null) {
+                    parentDto.getChildren().add(categoryMapper.toDto(categoryEntity));
+                } else {
+                    throw new CategoryMappingException("부모 없는 카테고리가 존재합니다.");
+                }
+            }
+        }
+        return categoryDtoList;
+    }
+
+    /**
      * 카테고리를 실제로 디비에 저장한다.
      */
     @Transactional
     public void updateCategories(List<CategoryDto> categories) {
-        Map<String, CategoryEntity> entityMap = new HashMap<>();
+        for (CategoryDto parent : categories) {
+            CategoryEntity parentEntity = categoryRepository.save(categoryMapper.toEntity(parent));
 
-        // 1. 모든 DTO를 Entity로 변환하고 map에 저장 (부모와 자식 모두)
-        categories.forEach(dto -> {
-            CategoryEntity entity = categoryMapper.toEntity(dto);
-            entityMap.put(dto.getId(), entity);
-        });
-
-        log.info("mappings");
-        // 2. 부모-자식 관계 설정
-        categories.forEach(dto -> {
-            if (dto.hasParent()) {
-                CategoryEntity child = entityMap.get(dto.getId());
-                CategoryEntity parent = entityMap.get(dto.getParentId());
-                if(parent == null)
-                    throw new CategoryMappingException("부모 엔티티를 찾을수 없습니다.");
-                child.setParent(parent);
+            for (CategoryDto child : parent.getChildren()) {
+                CategoryEntity childEntity = categoryMapper.toEntity(child);
+                childEntity.setParent(parentEntity);
+                categoryRepository.save(childEntity);
             }
-        });
-        log.info("chages");
-
-        // 3. 변경된 엔티티만 필터링해서 저장
-        List<CategoryEntity> changedEntities = categories.stream()
-                .filter(CategoryDto::isChanged)
-                .map(dto -> entityMap.get(dto.getId()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-        log.info("changedEntities = {}", categories.stream().toList());
-        if (!changedEntities.isEmpty()) {
-            // save all 을 하면 jpa 가 자동으로 pk 가 있으면 업데이트 하고 아니면 insert 한다.
-            log.info("saveAll");
-            categoryRepository.saveAll(changedEntities);
         }
     }
 }

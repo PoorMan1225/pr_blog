@@ -13,6 +13,9 @@ class CategoryMenuItem {
         this.categoryTitle = title;     // 타이틀 값
         this.categoryTag = tag;         // 태그 값
         this.isChanged = false;         // 변경 되었는지 여부
+        this.status = 'add';            // edit, add, delete, default
+        this.orderNo = 0;
+        this.children = [];
     }
     
     updateTag(tag) {
@@ -30,6 +33,47 @@ class CategoryMenuItem {
     }
 }
 
+function addChildItem(categoryMap, parentId) {
+    const parentCategoryItem = categoryMap.get(parentId);
+    if (!parentCategoryItem) return false;
+    
+    const childItem = new CategoryMenuItem(generateUUID(), parentId);
+    childItem.orderNo = parentCategoryItem.children.length;
+    parentCategoryItem.children.push(childItem);
+    // 데이터 동기화
+    categoryMap.set(childItem.id, childItem);
+    return childItem;
+}
+
+function removeChildItem(categoryMap, parentId, childId) {
+    const parentCategoryItem = categoryMap.get(parentId);
+    if (!parentCategoryItem) return false;
+    
+    const index = parentCategoryItem.children.findIndex(item => item.id === childId);
+    if (index === -1) return false;
+    
+    parentCategoryItem.children.splice(index, 1);
+    reOrder(parentCategoryItem.children);
+    // 데이터 동기화
+    categoryMap.delete(childId);
+    return true;
+}
+
+function reOrder(items) {
+    items.forEach((item, index) => {
+        item.orderNo = index;
+    });
+}
+
+function reassignParentOrder(categoryMap) {
+    const parents = [...categoryMap.values()]
+        .filter(item => item.parentId === null)
+        .sort((a, b) => a.orderNo - b.orderNo); // 혹시 순서 꼬였을 경우 대비
+    
+    parents.forEach((item, index) => {
+        item.orderNo = index;
+    });
+}
 
 /*────────────────────────────────────
   element 동적 생성
@@ -59,10 +103,10 @@ function createCategoryTitle(categoryTitleMap) {
  * @param categoryTitleMap 서버에서 등록한 카테고리 타이틀 map
  * @returns {HTMLDivElement} div 리턴
  */
-function createCategoryItem(id, categoryItem, categoryTitleMap) {
-    const $div = document.createElement("div");db_blog
+function createCategoryItem(categoryItem, categoryTitleMap) {
+    const $div = document.createElement("div");
     $div.className = "category__item";
-    $div.id = id;
+    $div.id = categoryItem.id;
     $div.dataset.type = "add";
     $div.innerHTML = `
       <div class="left">
@@ -76,7 +120,8 @@ function createCategoryItem(id, categoryItem, categoryTitleMap) {
         </div>
         <div class="select__container">
           <button>
-            <span class="select__menu__title">${categoryTitleMap.get(categoryItem.categoryTag)}</span>
+            <span id="${categoryItem.categoryTag}"
+                  class="select__menu__title">${categoryTitleMap.get(categoryItem.categoryTag)}</span>
             <span class="icon__dropdown"></span>
           </button>
         </div>
@@ -97,7 +142,6 @@ function createCategoryItem(id, categoryItem, categoryTitleMap) {
     $selectContainer.appendChild($ul);
     return $div;
 }
-
 
 /*────────────────────────────────────
   api 호출 관련 함수
@@ -136,9 +180,10 @@ async function loadSectionAndSetTitle($mainSection, url, sectionTitle) {
 async function fetchCategoryMenus(categoryMap) {
     try {
         // 리스트 정보로 변환 .
-        const categoryList = [...categoryMap.values()];
-        if (!categoryMap) return;
-
+        const categoryList = [...categoryMap.values()].filter((item) => item.parentId === null);
+        console.log(categoryList);
+        if (!categoryMap || !categoryList || categoryList.length <= 0) return null;
+        
         return await apiFetch('/categories', {
             method: 'PATCH',
             body: JSON.stringify(categoryList),
@@ -175,17 +220,9 @@ function changeItemDropIcon($element, icon, replaceIcon) {
     $element.classList.replace(icon, replaceIcon);
 }
 
-function isSameTitle(categoryMap, currentCategoryMenuItem) {
-    for (let key in categoryMap) {
-        const categoryMenuItem = categoryMap[key];
-        if (categoryMenuItem.id === currentCategoryMenuItem.id) {
-            continue;
-        }
-        if (categoryMenuItem.categoryTitle === currentCategoryMenuItem.categoryTitle) {
-            return false;
-        }
-    }
-    return true;
+function isSameTitle(categoryMap, $input) {
+    if(!$input) return false;
+    return categoryMap.values().some((item) => item.categoryTitle.trim() === $input.value.trim());
 }
 
 /*────────────────────────────────────
@@ -193,8 +230,9 @@ function isSameTitle(categoryMap, currentCategoryMenuItem) {
 ────────────────────────────────────*/
 document.addEventListener("DOMContentLoaded", function () {
     const categoryMap = new Map();
-    const $mainSection = document.querySelector('.container .main__section');
     const categoryTitleMap = new Map();
+    const categoryParentList = [];
+    const $mainSection = document.querySelector('.container .main__section');
     
     window.addEventListener('sideMenuClick', async function (ev) {
         const {section_title, url} = ev.detail;
@@ -216,49 +254,52 @@ document.addEventListener("DOMContentLoaded", function () {
         if ($target.closest('.category__root .btns__default button') || $target.closest('.category__bottom__add')) {
             const type = $target.dataset.type;
             if (type !== "add") return;
-            const id = generateUUID();
-            const item = new CategoryMenuItem(id);
-            categoryMap.set(id, item);
-            
-            const $div = createCategoryItem(id, item, categoryTitleMap);
+            const makeItem = new CategoryMenuItem(generateUUID());
+            // orderNo 부여
+            makeItem.orderNo = [...categoryMap.values()].filter(item => item.parentId === null).length;
+            // 부모 아이디 매핑
+            categoryMap.set(makeItem.id, makeItem);
+            const $div = createCategoryItem(makeItem, categoryTitleMap);
             document.querySelector(".category__controller").appendChild($div);
+            console.log(categoryMap);
         }
         
         // 자식 관련된 추가 삭제
         if ($target.closest(".btn__add")) {
-            const $div = $target.closest(".category__item");
-            if (!$div) return;
-            // data 매핑
-            const parentId = $div.id;
-            const id = generateUUID();
-            const childItem = new CategoryMenuItem(id, parentId);
-            categoryMap.set(id, childItem);
+            const $element = $target.closest(".category__item");
+            if (!$element) return;
             
-            const $childDiv = createCategoryItem(id, childItem, categoryTitleMap);
+            const childItem = addChildItem(categoryMap, $element.id);
+            if (!childItem) return;
+            
+            // 자식 아이탬을 만듬
+            const $childDiv = createCategoryItem(childItem, categoryTitleMap);
             childMenuItemDisabled($childDiv, true);
             
             // 형제 요소를 만들고 자식을 삽임
-            const next = $div.nextElementSibling;
+            const next = $element.nextElementSibling;
             const isContainer = next ? next.classList.contains('child__container') : false;
             let $childContainer;
+            // 컨테이너 요소 생성
             if (!isContainer) {
                 $childContainer = document.createElement('div');
                 $childContainer.className = 'child__container';
                 $childContainer.style.marginLeft = '50px';
-                $div.insertAdjacentElement("afterend", $childContainer);
+                $element.insertAdjacentElement("afterend", $childContainer);
             }
-            $childContainer = $div.nextElementSibling;
+            $childContainer = $element.nextElementSibling;
             $childContainer.appendChild($childDiv);
             $childContainer.style.display = 'block';
             
             // 추가시 arrow icon 추가
-            const $span = $div.querySelector('.icon__block.subtree span');
+            const $span = $element.querySelector('.icon__block.subtree span');
             const $iconBlock = $span.closest('.icon__block.subtree');
             $iconBlock.classList.add('active');
-            // 마지막 아이탬 포커스 추가
             
+            // 마지막 아이탬 포커스 추가
             $childContainer.querySelector('.child__container .category__item:last-child input[type="text"]').focus();
             changeItemDropIcon($span, 'none', 'arrow_icon');
+            console.log(categoryMap);
         }
         
         if ($target.closest(".btn__edit")) {
@@ -272,15 +313,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
         if ($target.closest(".btn__delete")) {
-            const $div = $target.closest(".category__item");
-            if (!$div) return;
-            const parentId = categoryMap.get($div.id).parentId;
+            const $element = $target.closest(".category__item");
+            if (!$element) return;
+            const parentId = categoryMap.get($element.id).parentId;
             if (parentId) {  // 자식 아이탬인 경우
                 // 부모 element 를 가지고 와서
                 const $parentElement = document.getElementById(parentId);
-                const $childContainer = $div.closest('.child__container');
-                categoryMap.delete($div.id);
-                $div.remove();
+                const $childContainer = $element.closest('.child__container');
+                const parentChildItem = categoryMap.get(parentId);
+                
+                // 자식 아이탬 삭제
+                if (!removeChildItem(categoryMap, parentId, $element.id)) return;
+                $element.remove();
                 
                 // 자식 아이탬이 없을 경우 icon 변경
                 if ($childContainer.children.length <= 0) {
@@ -292,45 +336,57 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             // 부모 일경우 자식들을 찾아서 하나씩 지워줘야 한다.
-            const $next = $div.nextElementSibling;
-            if (!$next || !$next.classList.contains('.child__container')) {
-                $div.remove();
+            const $next = $element.nextElementSibling;
+            if (!$next || !$next.classList.contains('child__container')) {
+                $element.remove();
                 return;
             }
             // 컨테이너 아래 자식 들 모두 삭제
             $next.querySelectorAll('.child__container > .category__item').forEach(($childItem) => {
-                categoryMap.delete($childItem.id);
+                removeChildItem(categoryMap, parentId, $childItem.id);
                 $childItem.remove();
             })
             $next.remove();
-            $div.remove();
-            categoryMap.delete($div.id);
+            $element.remove();
+            categoryMap.delete($element.id);
+            // 다시 재정렬
+            reassignParentOrder(categoryMap);
         }
         
         if ($target.closest(".btn__cancel")) {
             const $div = $target.closest(".category__item");
             const $input = $div.querySelector("input[type='text']");
-            const parentId = categoryMap[$div.id]?.parentId;
+            const parentId = categoryMap.get($div.id)?.parentId;
             const $childContainer = $div.closest('.child__container');
+            const $selectMenuTitle = $div.querySelector('.select__menu__title');
+            const item = categoryMap.get($div.id);
             
             // 자식일 경우 그냥 자기자신을 지우면된다.
             if ($div.dataset.type === "add") {
-                $div.remove();
-                categoryMap.delete($div.id);
-            } else {
-                // confirm 상태일 경우 삭제하면 안되니까 return 해야된다.
+                if (parentId) {
+                    $div.remove();
+                    removeChildItem(categoryMap, parentId, $div.id);
+                } else {
+                    $div.remove();
+                    categoryMap.delete($div.id);
+                    // 다시 재정렬
+                    reassignParentOrder(categoryMap);
+                    // 컨테이너의 자식이 존재하지 부모의 아이콘을 변경해준다.
+                    const $parentElement = document.getElementById(parentId);
+                    if ($childContainer.children.length <= 0) {
+                        const $span = $parentElement.querySelector('.icon__block.subtree span');
+                        changeItemDropIcon($span, 'arrow_icon', 'none');
+                    }
+                }
+            }
+            // edit 상태일 경우 취소를 누르면 confirm 상태로 돌아가야 한다. ui 업데이트
+            if ($div.dataset.type === "edit") {
                 $div.dataset.type = "confirm";
+                $input.value = item.categoryTitle;
+                $selectMenuTitle.id = String(item.categoryTag);
+                $selectMenuTitle.textContent = categoryTitleMap.get(item.categoryTag);
                 $input.disabled = true;
                 return;
-            }
-            // 부모아이디가 잇는 경우만 취소시 아이콘 변경
-            if (!parentId) return;
-            
-            // 컨테이너의 자식이 존재하지 부모의 아이콘을 변경해준다.
-            const $parentElement = document.getElementById(parentId);
-            if ($childContainer.children.length <= 0) {
-                const $span = $parentElement.querySelector('.icon__block.subtree span');
-                changeItemDropIcon($span, 'arrow_icon', 'none');
             }
         }
         
@@ -339,15 +395,19 @@ document.addEventListener("DOMContentLoaded", function () {
             const item = categoryMap.get($div.id);
             const $input = $div.querySelector("input[type='text']");
             const $selectedBox = $div.querySelector(".selected__title");
+            const $selectedMenuTitle = $div.querySelector(".select__menu__title");
             
-            if (!item.categoryTitle.trim()) return;
-            // 같은 타이틀 제목이 있는 경우 확인을 못누르게 막는다.
-            if (!isSameTitle(categoryMap, item)) {
+            if(isSameTitle(categoryMap, $input)) {
                 alert('같은 타이틀 제목이 존재합니다.');
                 $input?.focus();
                 return;
             }
+            
+            // data 업데이트
+            item.updateTitle($input.value.trim());
+            item.updateTag(Number($selectedMenuTitle.id));
             $div.dataset.type = "confirm";
+            
             // 자식 노드는 selectedBox 없음
             if ($selectedBox) $selectedBox.textContent = categoryTitleMap.get(item.categoryTag);
             $input.disabled = true;
@@ -385,9 +445,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if ($target.closest(".select__menus li")) {
             const $div = $target.closest(".category__item");
             const $container = $div.querySelector(".select__container");
+            // 선택된 아이디로 변경
             const $title = $container.querySelector(".select__menu__title");
+            $title.id = $target.id;
+            
             const tag = Number($target.id);  // 태그값을 가지고옴.
-            categoryMap.get($div.id).updateTag(tag);
             if (categoryTitleMap.get(tag)) {
                 $title.textContent = categoryTitleMap.get(tag);
             }
@@ -398,7 +460,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if ($target.closest('.btn__save')) {
             // 저장성공했는지 확인한다.
             const response = await fetchCategoryMenus(categoryMap);
-            if(!response.success) return;
+            console.log(response);
+            // if (!response.success) return;
             
             // todo 저장성공 했다면 새로 html 값을 가져와서 바인딩 한다.
             
@@ -412,8 +475,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const $div = $input.closest(".category__item");
         const $btnConfirm = $div.querySelector(".btn__confirm");
         const text = $input.value.trim();
-        
-        categoryMap.get($div.id).updateTitle(text);
         $btnConfirm.disabled = !text;
     });
 });

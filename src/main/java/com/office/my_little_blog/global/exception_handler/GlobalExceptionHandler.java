@@ -26,6 +26,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CategoryMappingException.class)
     public ResponseEntity<ApiResponse<?>> categoryMappingError(CategoryMappingException ex) {
         ApiResponse<?> apiResponse = ApiResponse.error(ErrorCode.INVALID_CATEGORY_MAPPING.name(), ex.getMessage());
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.internalServerError().body(apiResponse);
     }
 }

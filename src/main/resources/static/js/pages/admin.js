@@ -1,9 +1,11 @@
-import {apiFetch} from "../utils/api.js";
-
+function clearActiveMenu($listMenu) {
+    $listMenu.forEach(($menu) => {
+        $menu.classList.remove('active');
+    })
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     const $listMenus = document.querySelectorAll('.managed__container .list__menu li');
-    
     
     let beforeUrl = '';
     $listMenus.forEach(($menu) => {
@@ -29,8 +31,3 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 });
 
-function clearActiveMenu($listMenu) {
-    $listMenu.forEach(($menu) => {
-        $menu.classList.remove('active');
-    })
-}
