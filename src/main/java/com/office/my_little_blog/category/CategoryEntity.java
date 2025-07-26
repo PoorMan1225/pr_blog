@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "category")
+@Table(name = "category",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"parent_no", "category_title"}))
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,14 +22,14 @@ public class CategoryEntity {
 
     @ManyToOne
     @JoinColumn(name = "title_no") // FK
-    private CategoryTitleEntity title;
+    private CategoryTitleEntity titleEntity;
 
     @Column(name = "order_no")
     private int orderNo;
 
     @ManyToOne
     @JoinColumn(name = "parent_no") // FK (self-reference)
-    private CategoryEntity parent;
+    private CategoryEntity parentEntity;
 
     @Column(name = "category_title", unique = true, nullable = false)
     private String categoryTitle;

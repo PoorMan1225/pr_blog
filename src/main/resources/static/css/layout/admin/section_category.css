@@ -41,16 +41,15 @@
     padding: 20px;
     background-color: #222222;
 }
-.category__controller .category__root:hover,
-.category__controller .category__item:hover {
+.category__root:hover,
+.category__item:hover {
     border: 1px solid #c2c0c0;
 }
 
 /*────────────────────────────────────
   4. 리스트 및 아이템 구조
 ────────────────────────────────────*/
-.category__controller .category__item,
-.category__controller .category__root {
+.category__controller .category__item, .category__root {
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -86,7 +85,7 @@
 /*────────────────────────────────────
   5. 왼쪽 영역 (텍스트, 버튼, 셀렉트)
 ────────────────────────────────────*/
-.category__controller div .left {
+.category__drag__container div .left {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -94,13 +93,13 @@
     height: 100%;
 }
 
-.category__controller div .left .text {
+.category__drag__container div .left .text {
     font-size: 14px;
     color: white;
     font-weight: 300;
 }
 
-.category__controller .category__item .left button {
+.category__drag__container .category__item .left button {
     display: flex;
     background-color: transparent;
     border: none;
@@ -186,24 +185,24 @@
 /*────────────────────────────────────
   7. 오른쪽 영역 (버튼들)
 ────────────────────────────────────*/
-.category__controller div .right {
+.category__drag__container div .right {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.category__controller div .right .btns__default,
-.category__controller div .right .btns__edit {
+.category__drag__container div .right .btns__default,
+.category__drag__container div .right .btns__edit {
     padding: 10px;
     justify-content: center;
     align-items: center;
 }
 
-.category__controller div .right .btns__default {
+.category__drag__container div .right .btns__default {
     display: none;
 }
 
-.category__controller div .right .btns__default button {
+.category__drag__container div .right .btns__default button {
     width: 40px;
     height: 20px;
     font-size: 11px;
@@ -212,19 +211,19 @@
     cursor: pointer;
 }
 
-.category__controller div .right .btns__default button:hover {
+.category__drag__containerr div .right .btns__default button:hover {
     box-shadow: 0 0 1px 1px white;
 }
 
-.category__controller .category__root:hover .right .btns__default {
+.category__root:hover .right .btns__default {
     display: flex;
 }
 
-.category__controller .category__item.add:hover .right .btns__default {
+.category__drag__container .category__item.add:hover .right .btns__default {
     display: flex;
 }
 
-.category__controller div .right .btns__edit button {
+.category__drag__container div .right .btns__edit button {
     width: 60px;
     height: 30px;
     font-size: 11px;
@@ -233,11 +232,11 @@
     cursor: pointer;
 }
 
-.category__controller div .right .btns__edit button:not(:disabled):hover {
+.category__drag__container div .right .btns__edit button:not(:disabled):hover {
     box-shadow: 0 0 1px 1px white;
 }
 
-.category__controller .category__item .right button:disabled {
+.category__drag__container .category__item .right button:disabled {
     border: 1px solid #868686;
     color: #868686;
     cursor: not-allowed;
@@ -266,13 +265,13 @@
 /*────────────────────────────────────
   9. 아이콘 영역
 ────────────────────────────────────*/
-.category__controller .icons {
+.category__drag__container .icons {
     display: flex;
     flex-direction: row;
     height: 100%;
 }
 
-.category__controller .icon__block {
+.category__drag__container .icon__block {
     width: 30px;
     display: flex;
     height: 100%;
@@ -280,29 +279,29 @@
     justify-content: center;
 }
 
-.category__controller .icon__block.subtree {
+.category__drag__container .icon__block.subtree {
     background: #706f6f;
     cursor: pointer;
 }
 
-.category__controller .icon__block.edit {
+.category__drag__container .icon__block.edit {
     display: none;
 }
 
-.category__controller .icon__block .arrow_icon,
-.category__controller .icon__block .icon,
-.category__controller .icon__block .none {
+.category__drag__container .icon__block .arrow_icon,
+.category__drag__container .icon__block .icon,
+.category__drag__container .icon__block .none {
     display: inline-block;
     background-size: contain; /* or cover */
 }
 
-.category__controller .icon__block .icon {
+.category__drag__container .icon__block .icon {
     width: 15px;
     height: 15px;
     background: url("../../../icon/menu.svg") no-repeat center;
 }
 
-.category__controller .icon__block .arrow_icon {
+.category__drag__container .icon__block .arrow_icon {
     width: 15px;
     height: 15px;
     background: url("../../../icon/arrow_right.svg") no-repeat center;
@@ -310,17 +309,17 @@
     transition: transform 0.3s ease;
 }
 
-.category__controller .icon__block.subtree.active .arrow_icon  {
+.category__drag__container .icon__block.subtree.active .arrow_icon  {
     transform: rotate(0deg);
 }
 
-.category__controller .icon__block .none {
+.category__drag__container .icon__block .none {
     width: 5px;
     height: 5px;
     background: url("../../../icon/none.svg") no-repeat center;
 }
 
-.category__container .icon__block .none {
+.category__drag__container .icon__block .none {
     background: url("../../../icon/none.svg") no-repeat center;
 }
 
@@ -379,4 +378,8 @@
     height: 100%;
     width: 150px;
     cursor: pointer;
+}
+
+.category__container .category__save__container button:disabled {
+    cursor: not-allowed;
 }

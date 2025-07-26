@@ -41,9 +41,6 @@ public class CategoryDto {
     @JsonProperty("orderNo")
     private int orderNo;
 
-    @JsonProperty("state")
-    private boolean isChanged;  // 이런 네이밍이면 isIsChanged 로 나오기 때문에 getter 규칙이 그래서 @JsonProperty로 만들어 줘야한다.
-
     @JsonProperty("children")
     private List<CategoryDto> children;
 

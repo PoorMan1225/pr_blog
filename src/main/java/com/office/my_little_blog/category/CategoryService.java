@@ -32,30 +32,36 @@ public class CategoryService {
     /**
      * 모든 카테고리 Entity를 받아서 dto 로 변환 후 전달.
      *
-     * @return
+     * @return 정렬된 리스트 반환.
      */
+    @Transactional(readOnly = true)
     public List<CategoryDto> getAllCategories() {
         List<CategoryEntity> categories = categoryRepository.findAll();
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         Map<Integer, CategoryDto> map = new HashMap<>();
 
         for (CategoryEntity categoryEntity : categories) {
-            if (categoryEntity.getParent() == null) {
+            if (categoryEntity.getParentEntity() == null) {
                 CategoryDto dto = categoryMapper.toDto(categoryEntity);
                 map.put(categoryEntity.getNo(), dto);
                 categoryDtoList.add(dto);
             }
         }
+        // 부모 먼저 졍렬
+        categoryDtoList.sort(Comparator.comparingInt(CategoryDto::getOrderNo));
 
+        // 자식 넣기
         for (CategoryEntity categoryEntity : categories) {
-            if (categoryEntity.getParent() != null) {
-                CategoryDto parentDto = map.get(categoryEntity.getParent().getNo());
-                if (parentDto != null) {
-                    parentDto.getChildren().add(categoryMapper.toDto(categoryEntity));
-                } else {
-                    throw new CategoryMappingException("부모 없는 카테고리가 존재합니다.");
+            if (categoryEntity.getParentEntity() != null) {
+                CategoryDto parent = map.get(categoryEntity.getParentEntity().getNo());
+                if (parent != null) {
+                    parent.getChildren().add(categoryMapper.toDto(categoryEntity));
                 }
             }
+        }
+        // 자식 정렬
+        for (CategoryDto categoryDto : categoryDtoList) {
+            categoryDto.getChildren().sort(Comparator.comparingInt(CategoryDto::getOrderNo));
         }
         return categoryDtoList;
     }
@@ -65,13 +71,43 @@ public class CategoryService {
      */
     @Transactional
     public void updateCategories(List<CategoryDto> categories) {
-        for (CategoryDto parent : categories) {
-            CategoryEntity parentEntity = categoryRepository.save(categoryMapper.toEntity(parent));
+        List<CategoryEntity> toSave = new ArrayList<>();
+        List<CategoryEntity> toDelete = new ArrayList<>();
 
-            for (CategoryDto child : parent.getChildren()) {
-                CategoryEntity childEntity = categoryMapper.toEntity(child);
-                childEntity.setParent(parentEntity);
-                categoryRepository.save(childEntity);
+        for (CategoryDto parentDto : categories) {
+            CategoryEntity parentEntity = categoryMapper.toEntity(parentDto);
+
+            switch (parentDto.getState()) {
+                case ADD, UPDATE -> {
+                    toSave.add(parentEntity);
+                    collectChildEntities(parentDto, parentEntity, toSave, toDelete);
+                }
+                // 삭제의 경우 자식을 먼저넣고 후에 부모를 삭제한다.
+                case DELETE -> {
+                    collectChildEntities(parentDto, parentEntity, toSave, toDelete);
+                    toDelete.add(parentEntity);
+                }
+                case DEFAULT -> {
+                    collectChildEntities(parentDto, parentEntity, toSave, toDelete);
+                }
+            }
+        }
+        // 모아서 처리하는게 훨씬 효율적이다.
+        if (!toSave.isEmpty()) categoryRepository.saveAll(toSave);
+        if (!toDelete.isEmpty()) categoryRepository.deleteAll(toDelete);
+    }
+
+    private void collectChildEntities(CategoryDto parentDto,
+                                      CategoryEntity parentEntity,
+                                      List<CategoryEntity> toSave,
+                                      List<CategoryEntity> toDelete) {
+        for (CategoryDto childDto : parentDto.getChildren()) {
+            CategoryEntity childEntity = categoryMapper.toEntity(childDto);
+            childEntity.setParentEntity(parentEntity);
+
+            switch (childDto.getState()) {
+                case ADD, UPDATE -> toSave.add(childEntity);
+                case DELETE -> toDelete.add(childEntity);
             }
         }
     }
