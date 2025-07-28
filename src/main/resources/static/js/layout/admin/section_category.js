@@ -6,6 +6,7 @@ import getCsrfToken, {apiFetch} from "../../utils/api.js";
 ────────────────────────────────────*/
 
 class CategoryMenuItem {
+    // todo 추후 버서에서 게시글이 작성 되어 있을 경우에 변경 못하게 막는 로직을 추가해야한다.
     constructor(id, parentId = null, serverId = null, title = "", tag = 1) {
         this.id = id;                   // 현재 자신의 uuid
         this.parentId = parentId;       // 부모의 uuid
@@ -15,6 +16,10 @@ class CategoryMenuItem {
         this.state = 'ADD';             // UPDATE, ADD, DELETE, DEFAULT
         this.orderNo = 0;
         this.children = [];
+    }
+    
+    isParent() {
+        return this.parentId == null;
     }
     
     updateTag(tag) {
@@ -35,6 +40,13 @@ class CategoryMenuItem {
     updateTitle(title) {
         if (this.categoryTitle !== title) {
             this.categoryTitle = title;
+        }
+    }
+    
+    updateOrder(orderNo) {
+        if (this.orderNo !== orderNo) {
+            this.orderNo = orderNo;
+            this.updateState("UPDATE");
         }
     }
 }
@@ -59,17 +71,17 @@ async function loadCategoryTitles() {
 
 async function loadSectionAndSetTitle($mainSection, url, sectionTitle) {
     try {
-        $mainSection.innerHTML = await apiFetch(url, {
+        return await apiFetch(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'text/html'
             }
         });
-        const $title = document.querySelector('.category__container .title');
-        if ($title) $title.textContent = sectionTitle;
+        
     } catch (e) {
         handleError(e, '섹션 로딩');
+        return '';
     }
 }
 
@@ -125,8 +137,8 @@ function handleError(error, context = "") {
 function childMenuItemDisabled($childDiv, isDisabled) {
     $childDiv.querySelector(".btn__add").style.display = isDisabled ? 'none' : 'block';              // 자식은 추가 버튼 없음
     $childDiv.querySelector('.select__container').style.display = isDisabled ? 'none' : 'block';                           // 자식은 주제 선택 없음
-    $childDiv.querySelector('.selected__title__box').style.display = isDisabled ? 'none' : 'block';                        // 자식은 주제 선택 없음
-    $childDiv.querySelector('.icon__block.subtree').style.display = isDisabled ? 'none' : 'block';
+    $childDiv.querySelector('.selected__title__box').style.display = isDisabled ? 'none' : 'flex';                        // 자식은 주제 선택 없음
+    $childDiv.querySelector('.icon__block.subtree').style.display = isDisabled ? 'none' : 'flex';
 }
 
 function changeItemDropIcon($element, icon, replaceIcon) {
@@ -137,6 +149,7 @@ function isSameTitle(categoryMap, $input) {
     if (!$input) return false;
     return categoryMap.values().some((item) => item.categoryTitle.trim() === $input.value.trim());
 }
+
 
 function makeCategoryItems(categoryMap, categoryTitleMap, response) {
     if (!response || !response.data) return;
@@ -153,7 +166,9 @@ function makeCategoryItems(categoryMap, categoryTitleMap, response) {
         parentItem.categoryTitle = parent.categoryTitle;
         parentItem.state = parent.state;
         categoryMap.set(parentItem.id, parentItem)
-        const $parentElement = createCategoryItem(parentItem, categoryTitleMap, 'confirm');
+        
+        const $parentElement = createCategoryItem(parentItem, categoryMap, categoryTitleMap, 'confirm');
+        
         $categoryController.appendChild($parentElement);
         const $iconBlock = $parentElement.querySelector('.icon__block.subtree');
         const $span = $iconBlock.querySelector('span');
@@ -172,7 +187,7 @@ function makeCategoryItems(categoryMap, categoryTitleMap, response) {
             parentItem.children.push(childItem);
             
             categoryMap.set(childItem.id, childItem);
-            const $childElement = createCategoryItem(childItem, categoryTitleMap, 'confirm');
+            const $childElement = createCategoryItem(childItem, categoryMap, categoryTitleMap, 'confirm');
             childMenuItemDisabled($childElement, true);
             addChildItemToContainer($parentElement, $childElement);
         }
@@ -182,18 +197,18 @@ function makeCategoryItems(categoryMap, categoryTitleMap, response) {
 // 부모아이탬을 만들어서 반환.
 function addEmptyParentItem(categoryMap, categoryTitleMap, orderNo) {
     const makeItem = new CategoryMenuItem(generateUUID());
-    makeItem.orderNo = orderNo;
-    makeItem.state = 'ADD';
+    makeItem.updateOrder(orderNo);
+    makeItem.updateState('ADD');
     
     // 부모 아이디 매핑 gn
     categoryMap.set(makeItem.id, makeItem);
-    const $div = createCategoryItem(makeItem, categoryTitleMap, 'add');
+    const $div = createCategoryItem(makeItem, categoryMap, categoryTitleMap, 'add');
     document.querySelector(".category__controller").appendChild($div);
     
     // 상태변경 이벤트 추가.
     const event = new CustomEvent("categoryStateChanged", {
         detail: {
-            state : makeItem.state
+            state: makeItem.state
         }
     });
     window.dispatchEvent(event);
@@ -206,14 +221,14 @@ function addEmptyChildItem(categoryMap, categoryTitleMap, parentId) {
     if (!parentCategoryItem) return null;
     
     const childItem = new CategoryMenuItem(generateUUID(), parentId);
-    childItem.orderNo = parentCategoryItem.children.length;
+    childItem.updateOrder(parentCategoryItem.children.length);
     childItem.updateState('ADD');
     parentCategoryItem.children.push(childItem);
     // 데이터 동기화
     categoryMap.set(childItem.id, childItem);
     
     // 자식 아이탬을 만듬
-    const $childDiv = createCategoryItem(childItem, categoryTitleMap, 'add');
+    const $childDiv = createCategoryItem(childItem, categoryMap, categoryTitleMap, 'add');
     childMenuItemDisabled($childDiv, true);
     return $childDiv;
 }
@@ -244,7 +259,6 @@ function removeChildItem(categoryMap, parentId, childId) {
     // 부모아이탬이 클릭 되었을 경우 true 처리
     if (!parentId) return true;
     const parentCategoryItem = categoryMap.get(parentId);
-    console.log(parentCategoryItem);
     const childItem = categoryMap.get(childId);
     if (!childItem) return false;
     
@@ -253,6 +267,7 @@ function removeChildItem(categoryMap, parentId, childId) {
         const index = parentCategoryItem.children.findIndex(item => item.id === childId);
         if (index === -1) return false;
         parentCategoryItem.children.splice(index, 1);
+        // element 기준으로 정렬을 시키는게 맞음
         reOrder(parentCategoryItem.children);
         // 데이터 동기화
         categoryMap.delete(childId);
@@ -268,7 +283,7 @@ function reOrder(items) {
     for (const index in items) {
         const item = items[index];
         if (item.state !== 'DELETE') {
-            item.orderNo = idx;
+            item.updateOrder(idx);
             idx++;
         }
     }
@@ -282,7 +297,7 @@ function reassignParentOrder(categoryMap) {
     let index = 0;
     parents.forEach((item) => {
         if (item.state !== 'DELETE') {
-            item.orderNo = index;
+            item.updateOrder(index);
             index++;
         }
     });
@@ -301,40 +316,45 @@ function createCategoryTitle(categoryTitleMap) {
     return $ul;
 }
 
-function createCategoryItem(categoryItem, categoryTitleMap, dataType) {
+function createCategoryItem(categoryItem, categoryMap, categoryTitleMap, dataType) {
     const $div = document.createElement("div");
     $div.className = "category__item";
     $div.id = categoryItem.id;
     $div.dataset.type = dataType;
+    $div.draggable = true;
     $div.innerHTML = `
       <div class="left">
         <div class="icons">
           <div class="icon__block subtree"><span class="none"></span></div>
           <div class="icon__block drag"><span class="icon"></span></div>
         </div>
-        <label>
-            <input class="ellipsis" type="text" value="${categoryItem?.categoryTitle ?? ''}">
-        </label>
-        <div class="selected__title__box">
-          <span class="selected__title">${categoryTitleMap.get(categoryItem.categoryTag)}</span>
-        </div>
-        <div class="select__container">
-          <button>
-            <span id="${categoryItem.categoryTag}"
-                  class="select__menu__title">${categoryTitleMap.get(categoryItem.categoryTag)}</span>
-            <span class="icon__dropdown"></span>
-          </button>
-        </div>
       </div>
       <div class="right">
-        <div class="btns__edit">
-          <button class="btn__cancel">취소</button>
-          <button disabled class="btn__confirm">확인</button>
+        <div class="right__left">
+            <label>
+                <input class="ellipsis" type="text" value="${categoryItem?.categoryTitle ?? ''}">
+            </label>
+            <div class="selected__title__box">
+              <span class="selected__title">${categoryTitleMap.get(categoryItem.categoryTag)}</span>
+            </div>
+            <div class="select__container">
+              <button>
+                <span id="${categoryItem.categoryTag}"
+                      class="select__menu__title">${categoryTitleMap.get(categoryItem.categoryTag)}</span>
+                <span class="icon__dropdown"></span>
+              </button>
+            </div>
         </div>
-        <div class="btns__default">
-          <button class="btn__add">추가</button>
-          <button class="btn__edit">수정</button>
-          <button class="btn__delete">삭제</button>
+        <div class="right__right">
+            <div class="btns__edit">
+              <button class="btn__cancel">취소</button>
+              <button disabled class="btn__confirm">확인</button>
+            </div>
+            <div class="btns__default">
+              <button class="btn__add">추가</button>
+              <button class="btn__edit">수정</button>
+              <button class="btn__delete">삭제</button>
+            </div>
         </div>
       </div>`;
     const $selectContainer = $div.querySelector('.select__container');
@@ -346,6 +366,11 @@ function createCategoryItem(categoryItem, categoryTitleMap, dataType) {
         $input.disabled = true;
     }
     $selectContainer.appendChild($ul);
+    
+    // 드래그 이벤트 추가
+    $div.addEventListener('dragend', onDragEnd(categoryMap));
+    $div.addEventListener('dragstart', onDragStart);
+    $div.addEventListener('dragover', throttle(onDragOver, 200));
     return $div;
 }
 
@@ -355,6 +380,302 @@ function initCategoryTitle(categoryTitles, categoryTitleMap) {
     for (let key in categoryTitles) {
         const item = categoryTitles[key];
         categoryTitleMap.set(item.no, item.title);
+    }
+}
+
+/*────────────────────────────────────
+  drag 관련 함수
+────────────────────────────────────*/
+let $prevElement = null;
+let $dragStartElement = null;
+
+function onDragStart(ev) {
+    const x = ev.clientX;
+    const y = ev.clientY;
+    
+    const elementAtDrop = document.elementFromPoint(ev.clientX, ev.clientY)?.closest('.category__item');
+    if (elementAtDrop != null) {
+        $dragStartElement = elementAtDrop;
+    }
+}
+
+function onDragEnd(categoryMap) {
+    return function (ev) {
+        if (!$dragStartElement) return;
+        
+        const x = ev.clientX;
+        const y = ev.clientY;
+        
+        // 드래그 끝날시 라인 다 지우기
+        const $lines = document.querySelectorAll('.root__line, .child__line');
+        $lines.forEach((el) => {
+            el.classList.remove('root__line');
+            el.classList.remove('child__line');
+        });
+        
+        const $elementAtDrop = document.elementFromPoint(ev.clientX, ev.clientY)
+            .closest('.category__root, .category__item');
+        
+        // 루트라면
+        if ($elementAtDrop.className === 'category__root') {
+            const dragItem = categoryMap.get($dragStartElement.id);
+            const $categoryContainer = document.querySelector('.category__controller');
+            
+            if (dragItem.isParent()) { // 부모일 경우 자기 자식들도 다 옮겨줘야 함
+                const $childContainer = $dragStartElement.nextElementSibling;
+                $categoryContainer.insertBefore($dragStartElement, $categoryContainer.firstChild);
+                
+                if ($childContainer && $childContainer.classList.contains('child__container')) {
+                    $dragStartElement.insertAdjacentElement('afterend', $childContainer);
+                }
+                // 부모요소의 정렬을 다 재정렬 해야한다.
+                const $elements = document.querySelectorAll('.category__item:not(.child__container .category__item)');
+                $elements.forEach(($el, index) => {
+                    categoryMap.get($el.id).updateOrder(index);
+                })
+            } else { // 자식의 경우라면
+                // 현재 있는 부모 밑에 값을 변경을 해주고
+                const parentItem = categoryMap.get(dragItem.parentId);
+                const childItem = categoryMap.get(dragItem.id);
+                const $parentElement = document.getElementById(parentItem.id);
+                
+                // 데이터를 동기화 해준다.
+                for (let i = parentItem.children.length - 1; i >= 0; i--) {
+                    if (parentItem.children[i].id === childItem.id) {
+                        parentItem.children.splice(i, 1);
+                        break;
+                    }
+                }
+                childItem.updateState("UPDATE");
+                childItem.parentId = null;
+                categoryMap.set(childItem.id, childItem);
+                
+                // 해당 아이탬을 옮긴다.
+                $categoryContainer.insertBefore($dragStartElement, $categoryContainer.firstChild);
+                // 해당 아이탬의 display 를 변경해준다.
+                childMenuItemDisabled($dragStartElement, false);
+                // 요소의 오더를 재정렬 해준다.
+                const $elements = document.querySelectorAll('.category__item:not(.child__container .category__item)');
+                $elements.forEach(($el, index) => {
+                    categoryMap.get($el.id).updateOrder(index);
+                })
+                // 부모의 아이탬이 없을 경우 아이콘을 변경해준다.
+                const $childContainer = $parentElement.nextElementSibling;
+                if (!$childContainer) return;
+                if ($childContainer.children.length <= 0) {
+                    // 부모 아이탬이 있을 경우에 자식 하나씩 삭제시 icon 을 none 으로 변경해야한다.
+                    const $span = $parentElement.querySelector('.icon__block.subtree span');
+                    changeItemDropIcon($span, 'arrow_icon', 'none');
+                }
+            }
+        }
+        
+        // 루트가 아니라면
+        if ($elementAtDrop.className === 'category__item') {
+            // 부모요소인데 자식으로 갈경우
+            const overItem = categoryMap.get($elementAtDrop.id);
+            const dragItem = categoryMap.get($dragStartElement.id);
+            
+            // 부모 요소인데 부모로만 갈경우
+            if (dragItem.isParent() && overItem.isParent()) {
+                // 자리만 변경 가능
+                const $overChildContainer = $elementAtDrop.nextElementSibling;
+                if (!$overChildContainer || !$overChildContainer.classList.contains('child__container')) {
+                    const $dragChildContainer = $dragStartElement.nextElementSibling;
+                    $elementAtDrop.insertAdjacentElement('afterend', $dragStartElement); // 자기자신을 먼저 이동하고
+                    
+                    if ($dragChildContainer && $dragChildContainer.classList.contains('child__container')) {
+                        $dragStartElement.insertAdjacentElement('afterend', $dragChildContainer); // 자식들도 같이 이동
+                    }
+                }
+                
+                // over 된 녀석이 부모일경우 컨테이너 밑으로 나와 자식들을 이동.
+                if ($overChildContainer && $overChildContainer.classList.contains('child__container')) {
+                    const $dragChildContainer = $dragStartElement.nextElementSibling;
+                    $overChildContainer.insertAdjacentElement('afterend', $dragStartElement);
+                    
+                    if ($dragChildContainer && $dragChildContainer.classList.contains('child__container')) {
+                        $dragStartElement.insertAdjacentElement('afterend', $dragChildContainer); // 자식들도 같이 이동
+                    }
+                }
+                
+                // 부모요소의 정렬을 다 재정렬 해야한다.
+                const $elements = document.querySelectorAll('.category__item:not(.child__container .category__item)');
+                $elements.forEach(($el, index) => {
+                    categoryMap.get($el.id).updateOrder(index);
+                })
+                return;
+            }
+            
+            const pointElement = document.elementFromPoint(ev.clientX, ev.clientY);
+            const isRootLine = pointElement?.closest('.left');
+            // 자식 요소 드래그 -> 부모 요소
+            if (!dragItem.isParent() && overItem.isParent()) {
+                if (isRootLine) {
+                    // 부모 라인으로 이동
+                    const parentItem = categoryMap.get(dragItem.parentId);
+                    const childItem = categoryMap.get(dragItem.id);
+                    const $parentElement = document.getElementById(parentItem.id);
+                    
+                    // 데이터를 동기화 해준다.
+                    for (let i = parentItem.children.length - 1; i >= 0; i--) {
+                        if (parentItem.children[i].id === childItem.id) {
+                            parentItem.children.splice(i, 1);
+                            break;
+                        }
+                    }
+                    
+                    childItem.updateState("UPDATE");
+                    childItem.parentId = null;
+                    categoryMap.set(childItem.id, childItem);
+                    
+                    let $childContainer = $elementAtDrop.nextElementSibling;
+                    // display 변경
+                    childMenuItemDisabled($dragStartElement, false);
+                    if ($childContainer && $childContainer.classList.contains('child__container')) {
+                        $childContainer.insertAdjacentElement('afterend', $dragStartElement);
+                    } else {
+                        $elementAtDrop.insertAdjacentElement('afterend', $dragStartElement);
+                    }
+                    
+                    // 요소의 오더를 재정렬 해준다.
+                    const $elements = document.querySelectorAll('.category__item:not(.child__container .category__item)');
+                    $elements.forEach(($el, index) => {
+                        categoryMap.get($el.id).updateOrder(index);
+                    })
+                    // 부모의 아이탬이 없을 경우 아이콘을 변경해준다.
+                    const $parentChildContainer = $parentElement.nextElementSibling;
+                    if (!$parentChildContainer) return;
+                    if ($parentChildContainer.children.length <= 0) {
+                        // 부모 아이탬이 있을 경우에 자식 하나씩 삭제시 icon 을 none 으로 변경해야한다.
+                        const $span = $parentElement.querySelector('.icon__block.subtree span');
+                        changeItemDropIcon($span, 'arrow_icon', 'none');
+                    }
+                } else { // 자식 라인으로 이동
+                    // 부모의 바로 아래에 배치
+                    const parentItem = categoryMap.get(dragItem.parentId);
+                    const childItem = categoryMap.get(dragItem.id);
+                    const overItem = categoryMap.get($elementAtDrop.id);
+                    // 데이터를 동기화 해준다.
+                    childItem.parentId = overItem.parentId;
+                    childItem.updateState("UPDATE");
+                    for (let i = parentItem.children.length - 1; i >= 0; i--) {
+                        if (parentItem.children[i].id === childItem.id) {
+                            parentItem.children.splice(i, 1);
+                            break;
+                        }
+                    }
+                    
+                    let $childContainer = $elementAtDrop.nextElementSibling;
+                    // 컨테이너 요소 생성
+                    if (!$childContainer || !$childContainer.classList.contains('child__container')) {
+                        $childContainer = document.createElement('div');
+                        $childContainer.className = 'child__container';
+                        $childContainer.display = 'block';
+                        $childContainer.style.marginLeft = '50px';
+                        $elementAtDrop.insertAdjacentElement("afterend", $childContainer);
+                        $childContainer.insertBefore($dragStartElement, $childContainer.firstChild);
+                    } else {
+                        $childContainer.insertBefore($dragStartElement, $childContainer.firstChild);
+                    }
+                    // 호버된 녀석에게 첫번째 인덱스에 아이탬 추가.
+                    childItem.parentId = overItem.id;
+                    categoryMap.set(childItem.id, childItem);
+                    overItem.children.unshift(childItem);
+                    reOrder(overItem.children);
+                }
+            }
+            
+            // 자식요소 드래그 -> 자식 요소
+            if (!dragItem.isParent() && !overItem.isParent()) {
+                const overItem = categoryMap.get($elementAtDrop.id);
+                const dragItem = categoryMap.get($dragStartElement.id);
+                const parentItem = categoryMap.get(dragItem.parentId);
+                const overParentItem = categoryMap.get(overItem.parentId);
+                
+                for (let i = parentItem.children.length - 1; i >= 0; i--) {
+                    if (parentItem.children[i].id === dragItem.id) {
+                        parentItem.children.splice(i, 1);
+                        break;
+                    }
+                }
+                reOrder(parentItem.children);
+                for (let i = overParentItem.children.length - 1; i >= 0; i--) {
+                    if (overParentItem.children[i].id === overItem.id) {
+                        dragItem.updateState("UPDATE");
+                        dragItem.parentId = overParentItem.id;
+                        overParentItem.children.splice(i+1, 0, dragItem);
+                        reOrder(overParentItem.children);
+                        break;
+                    }
+                }
+                $elementAtDrop.insertAdjacentElement('afterend', $dragStartElement);
+            }
+        }
+        // 초기화
+        $prevElement = null;
+        $dragStartElement = null;
+    }
+}
+
+function throttle(callback, limit) {
+    let waiting = false; // 클로저로 감싸서 false 로 처리
+    return function (...args) {
+        // 브라우저가 이벤트 넘겨주고
+        if (!waiting) {
+            waiting = true;
+            callback(this, ...args);
+            setTimeout(() => {
+                waiting = false;
+            }, limit);
+        }
+    }
+}
+
+let prevHighlighted = null;
+
+function onDragOver(element, ev) {
+    // 드래그 시작 element 가 없으면 바로 종료
+    if (!$dragStartElement) return;
+    // element가 유효하지 않으면 종료
+    if (!element || element === $dragStartElement) return;
+    
+    const pointElement = document.elementFromPoint(ev.clientX, ev.clientY);
+    const isRootLine = pointElement?.closest('.left');
+    const isOverChild = element.closest('.child__container');
+    const isDragChild = $dragStartElement.closest('.child__container');
+    
+    // 이전 강조 요소가 있고, 지금과 다르다면 제거
+    if (prevHighlighted && prevHighlighted !== element) {
+        prevHighlighted.classList.remove('root__line', 'child__line');
+    }
+    
+    // 공통: 먼저 이전 보더 클래스 제거
+    element.classList.remove('root__line', 'child__line');
+    prevHighlighted = element;
+    
+    // element 가 root 라면
+    if (element.className === 'category__root') {
+        element.classList.add('root__line');
+        return;
+    }
+    
+    // 부모 인데 자식이 있는 경우라면
+    if (!isDragChild) {
+        // 다른 부모 또는 루트 한테로만 이동 가능
+        if (!isOverChild) {
+            element.classList.add('root__line');
+        }
+        return;
+    }
+    if (isOverChild) { // 자식 위로 드래그 했을 경우
+        element.classList.add('root__line');
+        return;
+    }
+    if (isRootLine) {
+        element.classList.add('root__line');
+    } else {
+        element.classList.add('child__line');
     }
 }
 
@@ -382,7 +703,13 @@ document.addEventListener("DOMContentLoaded", function () {
         initCategoryTitle(responseCategoryTitles.data, categoryTitleMap);
         
         // html section 받아오기
-        await loadSectionAndSetTitle($mainSection, url, section_title);
+        $mainSection.innerHTML = await loadSectionAndSetTitle($mainSection, url, section_title);
+        const $title = document.querySelector('.category__container .title');
+        if ($title) $title.textContent = section_title;
+        
+        // root 드래그 이벤트 초기화
+        const $categoryRoot = document.querySelector('.category__root');
+        $categoryRoot.addEventListener('dragover', throttle(onDragOver, 200));
         
         // post 카테고리 조회 데이터 받아오기
         const response = await getAllCategories();
@@ -418,6 +745,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const $iconBlock = $span.closest('.icon__block.subtree');
             $iconBlock.classList.add('active');
             changeItemDropIcon($span, 'none', 'arrow_icon');
+            
             console.log(categoryMap);
         }
         
@@ -592,7 +920,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if ($target.closest('.btn__save')) {
             // 추가 카테고리가 있는지 체크 한다.
             const elements = document.querySelectorAll('.category__item[data-type="add"]');
-            if(elements.length > 0) {
+            if (elements.length > 0) {
                 alert('정보를 확정한 후에 저장할 수 있습니다.');
                 return;
             }

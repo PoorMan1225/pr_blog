@@ -25,11 +25,13 @@ public class CategoryMapper {
                 .orElseThrow(() -> new CategoryMappingException("카테고리 태그 값을 찾을 수 없습니다."));
 
         if (dto.hasServerId()) {
-            // 기존 엔티티 가져와서 수정
+            // 기존 엔티티 가져와서 수정 (기존 엔티티 가져와서 수정안하면 db 랑 동기화가 안된다.)
             CategoryEntity existing = categoryRepository.findById(dto.getServerId())
                     .orElseThrow(() -> new IllegalStateException("수정 대상이 존재하지 않습니다."));
 
             existing.setTitleEntity(titleEntity);
+
+            if(!dto.hasParent()) existing.setParentEntity(null);
             existing.setOrderNo(dto.getOrderNo());
             existing.setCategoryTitle(dto.getCategoryTitle());
             return existing;

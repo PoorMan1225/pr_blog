@@ -42,7 +42,7 @@
     background-color: #222222;
 }
 .category__root:hover,
-.category__item:hover {
+.category__controller .category__item:hover {
     border: 1px solid #c2c0c0;
 }
 
@@ -52,11 +52,19 @@
 .category__controller .category__item, .category__root {
     width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     height: 45px;
     background-color: #484646;
     border: 1px solid black;
+}
+
+.category__root.root__line,
+.category__controller .category__item.root__line {
+    border-bottom: 2px solid orangered;
+}
+
+.category__controller .category__item.child__line .right {
+    border-bottom: 2px solid orangered;
 }
 
 .category__item[data-type="confirm"] .select__container,
@@ -93,23 +101,6 @@
     height: 100%;
 }
 
-.category__drag__container div .left .text {
-    font-size: 14px;
-    color: white;
-    font-weight: 300;
-}
-
-.category__drag__container .category__item .left button {
-    display: flex;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    margin-left: 15px;
-    color: white;
-    font-size: 12px;
-}
-
 .category__item .selected__title__box {
     margin-left: 20px;
     text-align: center;
@@ -130,14 +121,14 @@
 /*────────────────────────────────────
   6. 셀렉트 메뉴 부분
 ────────────────────────────────────*/
-.category__controller .category__item .left .select__container {
+.category__controller .category__item .right .select__container {
     display: flex;
     align-items: center;
     position: relative;
     height: 40px;
 }
 
-.category__controller .category__item .left .select__container .select__menus {
+.category__controller .category__item .right .select__container .select__menus {
     width: 148px;
     position: absolute;
     box-shadow: 0 0 3px 1px gray;
@@ -167,7 +158,7 @@
     transform: rotate(180deg);
 }
 
-.category__controller .category__item .left .select__container .select__menus li {
+.category__controller .category__item .right .select__container .select__menus li {
     width: 100%;
     border: none;
     font-size: 12px;
@@ -177,7 +168,7 @@
     padding: 5px 0 5px 20px;
 }
 
-.category__controller .category__item .left .select__container .select__menus li:hover {
+.category__controller .category__item .right .select__container .select__menus li:hover {
     background: #c4bfbf;
     cursor: pointer;
 }
@@ -187,8 +178,34 @@
 ────────────────────────────────────*/
 .category__drag__container div .right {
     display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category__drag__container div .right .right__left,
+.category__drag__container div .right .right__right{
+    display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.category__drag__container div .right .text {
+    font-size: 14px;
+    color: white;
+    font-weight: 300;
+}
+
+.category__drag__container .category__item .right .select__container  button {
+    display: flex;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    margin-left: 15px;
+    color: white;
+    font-size: 12px;
 }
 
 .category__drag__container div .right .btns__default,
@@ -211,7 +228,7 @@
     cursor: pointer;
 }
 
-.category__drag__containerr div .right .btns__default button:hover {
+.category__drag__container div .right .btns__default button:hover {
     box-shadow: 0 0 1px 1px white;
 }
 
@@ -293,6 +310,10 @@
 .category__drag__container .icon__block .none {
     display: inline-block;
     background-size: contain; /* or cover */
+}
+
+.category__drag__container .icon__block.drag {
+    cursor: grab;
 }
 
 .category__drag__container .icon__block .icon {
