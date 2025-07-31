@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" th:href="@{/css/base/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/base/common.css}">
+    <link rel="stylesheet" th:href="@{/css/layout/admin/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/entries.css}">
+    <title>글쓰기</title>
+</head>
+<body>
+<div class="container">
+    <header th:replace="~{layout/entries/nav_entries.html::header}"></header>
+    <main>
+        <div class="main__inner">
+            <div class="category__container">
+                <div class="btn__menus">
+                    <span class="txt">카테고리</span>
+                    <span class="icon arrow_down"></span>
+                </div>
+                <div class="select__menu__wrapper">
+                    <ul class="select__menus">
+
+                    </ul>
+                </div>
+            </div>
+            <div class="entries__title">
+                <textarea class="auto-height-textarea" placeholder="제목을 입력하세요."></textarea>
+            </div>
+            <div class="entries__body">
+                <div id="editorjs"></div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer__inner">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+    </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+<script th:src="@{/js/utils/api.js}" type="module"></script>
+<script th:src="@{/js/utils/uuid.js}" type="module"></script>
+<script th:src="@{/js/pages/entries.js}" type="module"></script>
+</body>
+</html>

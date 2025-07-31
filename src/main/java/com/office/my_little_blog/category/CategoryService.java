@@ -1,6 +1,5 @@
 package com.office.my_little_blog.category;
 
-import com.office.my_little_blog.global.exception.CategoryMappingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;

@@ -1,0 +1,175 @@
+.container {
+    width: 100%;
+}
+
+body {
+    background: #151414;
+}
+
+/*────────────────────────────────────
+  entries main Layout
+────────────────────────────────────*/
+main {
+
+}
+
+main .main__inner {
+    width: 880px;
+    margin: 0 auto;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    height: calc(100vh - var(--header-height) * 2);
+}
+
+/*────────────────────────────────────
+  category select Layout
+────────────────────────────────────*/
+
+.category__container {
+    width: 100%;
+    padding: 10px;
+    position: relative;
+    font-size: 12px;
+    color: white;
+}
+
+.category__container .btn__menus {
+    display: flex;
+    width: 170px;
+    padding: 10px;
+    text-align: center;
+    justify-content: space-between;
+    align-items: center;
+    height: 30px;
+    border: 1px solid gray;
+    cursor: pointer;
+    user-select: none;
+}
+
+.category__container .btn__menus:hover {
+    background: #484646;
+}
+
+.category__container .btn__menus span {
+    display: inline-block;
+}
+
+.category__container .select__menus {
+    padding: 10px;
+    position: absolute;
+    width: 170px;
+    max-height: 300px;     /* 최대 높이 설정 */
+    overflow-y: auto;      /* Y축으로 스크롤 생기게 */
+    border: 1px solid gray;
+    box-shadow: 0 0 2px 1px gray;
+}
+
+.select__menu__wrapper {
+    width: 170px;
+    position: absolute;
+    margin-top: 15px;
+    display: none;
+}
+
+.select__menu__wrapper.active {
+    display: block;
+}
+
+.select__menu__wrapper:before {
+    content: "";
+    position: absolute;
+    display: block;
+    top: calc(-16px / 2);
+    z-index: 4;
+    left: calc(50% - (13px / 2));
+    width: 13px;
+    height: 13px;
+    border-top: 2px solid gray;
+    border-left: 2px solid gray;
+    transform: rotate(45deg);
+    background: #151414;
+}
+
+.category__container .select__menus {
+    background: #151414;
+    z-index: 4;
+}
+
+.category__container .select__menus li {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.category__container .select__menus li:hover {
+    background: #484646;
+}
+
+.category__container .select__menus li span {
+    user-select: none;
+}
+/*────────────────────────────────────
+  entries title Layout
+────────────────────────────────────*/
+.auto-height-textarea {
+    width: 100%;               /* 최대 너비 고정 */
+    max-width: 100%;           /* 부모 너비 제한 */
+
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.4;
+
+    padding: 6px 4px;
+    box-sizing: border-box;
+
+    border: none;
+    border-bottom: 2px solid #999;
+    outline: none;
+    color: white;
+
+    resize: none;
+    overflow-y: hidden;        /* 세로 스크롤 숨김 */
+    white-space: pre-wrap;     /* 자동 줄바꿈 */
+    word-break: break-word;    /* 단어 단위 줄바꿈 */
+
+    background: transparent;
+}
+
+/*────────────────────────────────────
+  entries body Layout
+────────────────────────────────────*/
+.entries__body {
+    width: 100%;
+    z-index: 1;
+}
+
+.codex-editor {
+    color: white;
+}
+
+.codex-editor__redactor {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0;
+}
+
+.ce-block__content {
+    padding: 0 !important;
+    max-width: 100% !important;
+    margin: 0;
+}
+
+.ce-toolbar__content {
+    max-width: 100%; !important;
+}
+
+/*────────────────────────────────────
+  entries footer Layout
+────────────────────────────────────*/
+
+footer {
+    width: 100%;
+    height: var(--header-height);
+    background: gray;
+    position: absolute;
+    bottom: 0;
+}

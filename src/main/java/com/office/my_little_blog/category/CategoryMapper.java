@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class CategoryMapper {
@@ -43,25 +42,6 @@ public class CategoryMapper {
                 .orderNo(dto.getOrderNo())
                 .categoryTitle(dto.getCategoryTitle())
                 .build();
-    }
-
-    /**
-     * DB 구조가 평면 적 재귀 구조기 때문에 평탄화 작업을 해줘야 한다.
-     */
-    @Transactional(readOnly = true)
-    public List<CategoryEntity> toEntities(List<CategoryDto> dtoList) {
-        List<CategoryEntity> categoryEntities = new ArrayList<>();
-        for (CategoryDto parentDto : dtoList) {
-            CategoryEntity parentEntity = toEntity(parentDto);
-            categoryEntities.add(parentEntity);
-
-            for (CategoryDto childDto : parentDto.getChildren()) {
-                CategoryEntity childEntity = toEntity(childDto);
-                childEntity.setParentEntity(parentEntity);
-                categoryEntities.add(childEntity);
-            }
-        }
-        return categoryEntities;
     }
 
     public CategoryDto toDto(CategoryEntity entity) {

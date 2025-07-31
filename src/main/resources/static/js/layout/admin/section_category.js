@@ -150,7 +150,6 @@ function isSameTitle(categoryMap, $input) {
     return categoryMap.values().some((item) => item.categoryTitle.trim() === $input.value.trim());
 }
 
-
 function makeCategoryItems(categoryMap, categoryTitleMap, response) {
     if (!response || !response.data) return;
     const items = response.data;

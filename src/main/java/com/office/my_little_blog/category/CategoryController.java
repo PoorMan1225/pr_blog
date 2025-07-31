@@ -32,7 +32,6 @@ public class CategoryController {
     @PatchMapping("/categories")
     public ResponseEntity<ApiResponse<?>> updateCategories(@RequestBody List<CategoryDto> categories) {
         log.info("patch updateCategories()");
-        log.info("categories = {}", categories);
         categoryService.updateCategories(categories);
         return new ResponseEntity<>(ApiResponse.ok("SAVE SUCCESS"), HttpStatus.OK);
     }
