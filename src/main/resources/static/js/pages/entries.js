@@ -199,6 +199,11 @@ async function getAllCategories() {
 }
 // entries.js (module)
 const EditorJS = window.EditorJS;  // 전역 객체를 명시적으로 가져오기
+const InlineImage = window.InlineImage;
+const Header = window.Header;
+const EditorjsList  = window.EditorjsList;
+const Quote = window.Quote;
+const editorjsCodeflask  = window.editorjsCodeflask ;
 
 document.addEventListener('DOMContentLoaded', async function () {
     /* menus 초기화 */
@@ -206,5 +211,38 @@ document.addEventListener('DOMContentLoaded', async function () {
     const menus = new Menus(menuResponse);
     const entry = new EntryTitle();
     
-    const editor = new EditorJS('editorjs');
+    const editor = new EditorJS({
+        tools: {
+            header: {
+                class: Header,
+                inlineToolbar: true
+            },
+            list: {
+                class: EditorjsList,
+                inlineToolbar: true,
+                config: {
+                    defaultStyle: 'unordered'
+                },
+            },
+            code : editorjsCodeflask,
+            image: {
+                class: InlineImage,
+                inlineToolbar: true,
+                config: {
+                    embed: {
+                        display: true,
+                    },
+                    unsplash: {
+                        appName: 'my-little-blog',
+                        apiUrl: 'http://localhost:8080/unsplash',
+                        maxResults: 30,
+                        imageParams: {
+                            q:85,
+                            w:1500,
+                        }
+                    }
+                }
+            }
+        }
+    });
 });

@@ -16,9 +16,6 @@ main {
 main .main__inner {
     width: 880px;
     margin: 0 auto;
-    border-left: 1px solid gray;
-    border-right: 1px solid gray;
-    height: calc(100vh - var(--header-height) * 2);
 }
 
 /*────────────────────────────────────
@@ -137,11 +134,16 @@ main .main__inner {
 /*────────────────────────────────────
   entries body Layout
 ────────────────────────────────────*/
+
+
 .entries__body {
     width: 100%;
     z-index: 1;
 }
 
+/*────────────────────────────────────
+  entries editor
+────────────────────────────────────*/
 .codex-editor {
     color: white;
 }
@@ -162,14 +164,74 @@ main .main__inner {
     max-width: 100%; !important;
 }
 
+.ce-block--selected .ce-block__content {
+    background: #706f6f !important;
+}
+
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn {
+    background: white !important;
+}
+
+.ce-popover__container {
+    z-index: 4 !important;
+}
+
+
+/*────────────────────────────────────
+  entries image component css
+────────────────────────────────────*/
+
+.modal {
+    display: none !important;
+}
+
+.inline-image__image-gallery,
+.inline-imag__img-wrapper {
+    background: #151414 !important;
+}
+
+.inline-image__orientation-wrapper button:hover {
+    background: white !important;
+    color: #151414 !important;
+}
+
+.inline-image__orientation-wrapper button {
+    padding: 5px !important;
+    background: #151414 !important;
+    color: white !important;
+}
+
+/*────────────────────────────────────
+  entries code flask css
+────────────────────────────────────*/
+.editorjs-codeFlask_Wrapper {
+    z-index: auto !important;
+    border: 1px solid #21252a !important;
+}
+
+.codeflask.codeflask--has-line-numbers:before,
+.codeflask__lines {
+    z-index: auto !important;
+    background: #1f2124;;
+}
+
+.codeflask__textarea.codeflask__flatten {
+    z-index: auto !important;
+    background: #1f2124 !important;
+    caret-color: white !important; /* 연두색 커서 */
+    color: #939bc8 !important;
+}
+
 /*────────────────────────────────────
   entries footer Layout
 ────────────────────────────────────*/
 
 footer {
+    position: fixed;
+    bottom: 0;
     width: 100%;
     height: var(--header-height);
     background: gray;
-    position: absolute;
-    bottom: 0;
+    z-index: 10;
 }
