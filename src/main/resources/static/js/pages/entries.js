@@ -138,10 +138,6 @@ class MenuItem {
   entries 게시글 관련
 ────────────────────────────────────*/
 
-class Entry {
-
-}
-
 class EntryTitle {
     constructor() {
         this.initElement();
@@ -179,6 +175,55 @@ class EntryTitle {
     }
 }
 
+class Footer {
+    constructor(onButtonClick) {
+        this.initElement();
+        this.initEvent(onButtonClick);
+    }
+    
+    initElement() {
+        this.$btnShow = document.querySelector('#btn_show');
+        this.$btnSave = document.querySelector('#btn_save');
+    }
+    
+    initEvent(onButtonClick) {
+        this.$btnShow.addEventListener('click', onButtonClick);
+        this.$btnSave.addEventListener('click', onButtonClick);
+    }
+}
+
+class EmptyParagraphTool {
+    static get toolbox() {
+        return {
+            title: 'Paragraph',
+            icon: '<svg>...</svg>'
+        };
+    }
+    
+    constructor({ data, api }) {
+        this.api = api;
+        this.data = data || { text: '' };
+        
+        this.element = document.createElement('div');
+        this.element.contentEditable = true;
+        this.element.classList.add('ce-paragraph');
+        this.element.innerHTML = this.data.text || '';
+    }
+    
+    render() {
+        return this.element;
+    }
+    
+    save(blockContent) {
+        const text = blockContent.innerHTML.trim();
+        
+        // 공백이면 &nbsp;로 처리
+        return {
+            text: text === '' ? '&nbsp;' : text
+        };
+    }
+}
+
 /*────────────────────────────────────
   api 호출 관련 함수
 ────────────────────────────────────*/
@@ -210,9 +255,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     const menuResponse = await getAllCategories();
     const menus = new Menus(menuResponse);
     const entry = new EntryTitle();
-    
     const editor = new EditorJS({
+        holder: 'entries_editorjs',
         tools: {
+            paragraph: EmptyParagraphTool,
             header: {
                 class: Header,
                 inlineToolbar: true
@@ -242,6 +288,41 @@ document.addEventListener('DOMContentLoaded', async function () {
                         }
                     }
                 }
+            }
+        }
+    });
+    
+    const footer = new Footer(async (ev) => {
+        // 저장
+        if(ev.currentTarget.id === 'btn_save') {
+            try {
+                const outputData = await editor.save();
+                console.log(outputData);
+                // 필요하다면 서버에 저장
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        
+        // 미리보기
+        if(ev.currentTarget.id === 'btn_show') {
+            try {
+                const outputData = await editor.save();  // editor 데이터 추출
+                console.log(outputData);
+                const editorViewer = new EditorJS({
+                    holder:'viewer_editorjs',
+                    data:outputData,
+                    readOnly: true,
+                    tools: {
+                        header: { class: Header, inlineToolbar: true },
+                        list: { class: EditorjsList },
+                        code: editorjsCodeflask,
+                        image: { class: InlineImage }
+                    }
+                });
+                document.querySelector('.viewer').style.visibility = 'visible';
+            } catch (error) {
+                console.error(error);
             }
         }
     });

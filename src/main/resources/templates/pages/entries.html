@@ -30,16 +30,44 @@
                 <textarea class="auto-height-textarea" placeholder="제목을 입력하세요."></textarea>
             </div>
             <div class="entries__body">
-                <div id="editorjs"></div>
+                <div id="entries_editorjs"></div>
             </div>
         </div>
     </main>
     <footer>
         <div class="footer__inner">
             <div class="left"></div>
-            <div class="right"></div>
+            <div class="right">
+                <button id="btn_show">미리보기</button>
+                <button id="btn_save">저장</button>
+            </div>
         </div>
     </footer>
+    <div class="viewer">
+        <div class="viewer-content">
+            <main>
+                <div class="main__inner">
+                    <div class="category__container">
+                        <div class="btn__menus">
+                            <span class="txt">카테고리</span>
+                            <span class="icon arrow_down"></span>
+                        </div>
+                        <div class="select__menu__wrapper">
+                            <ul class="select__menus">
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="entries__title">
+                        <textarea class="auto-height-textarea" placeholder="제목을 입력하세요."></textarea>
+                    </div>
+                    <div class="entries__body">
+                        <div id="viewer_editorjs"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/editorjs-inline-image"></script>

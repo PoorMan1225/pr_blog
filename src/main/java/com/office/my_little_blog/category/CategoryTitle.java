@@ -1,8 +1,11 @@
 package com.office.my_little_blog.category;
 
+import lombok.Getter;
+
 /**
  * 카테고리 타이틀의 정보 초기 데이터베이스에 저장용
  */
+@Getter
 public enum CategoryTitle {
     EMPTY(1, "Empty"),
     CSS(2, "CSS"),
@@ -18,13 +21,5 @@ public enum CategoryTitle {
     CategoryTitle(int id, String displayName) {
         this.id = id;
         this.displayName = displayName;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 }
